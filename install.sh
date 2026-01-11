@@ -68,6 +68,9 @@ install_file() {
     local src="$1"
     local dest="$2"
 
+    # Remove existing file/symlink to avoid write errors (e.g., Docker symlinks)
+    rm -f "$dest" 2>/dev/null || true
+
     if [[ "$LOCAL_INSTALL" == true ]]; then
         cp "$SCRIPT_DIR/$src" "$dest"
     else
