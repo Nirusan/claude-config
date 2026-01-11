@@ -334,6 +334,26 @@ description: What this skill covers
 
 ---
 
+### Automation Scripts
+
+Scripts for running Claude Code autonomously.
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/ralph.sh <n>` | Run N autonomous iterations (loop) |
+| `scripts/ralph-once.sh` | Run 1 autonomous task then stop |
+
+**What they do:**
+1. Switch to `ralph` branch
+2. Run `/next-task` → `/implement` → `/validate` → `/update-progress` → `/git-add-commit-push`
+3. Repeat (ralph.sh) or stop (ralph-once.sh)
+
+**Requirements:**
+- `memory-bank/` folder with project docs (coming soon to this repo)
+- `progress.txt` to track completed work
+
+---
+
 ## File Structure
 
 ```
@@ -343,6 +363,9 @@ claude-config/
 ├── install.sh              # Installer (--user/--project)
 ├── sync.sh                 # Sync ~/.claude/ → repo
 ├── .gitignore
+├── scripts/
+│   ├── ralph.sh            # Autonomous loop (N iterations)
+│   └── ralph-once.sh       # Autonomous single task
 ├── config/
 │   ├── CLAUDE.md           # Code conventions
 │   ├── settings.json       # Model, plugins, language
