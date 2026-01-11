@@ -1,4 +1,10 @@
-[🇬🇧 English](README.md) | 🇫🇷 Français
+<div align="center">
+
+### [🇬🇧 English](README.md)&nbsp;&nbsp;|&nbsp;&nbsp;🇫🇷 Français
+
+---
+
+</div>
 
 # Configuration Claude Code
 
