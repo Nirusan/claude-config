@@ -4,25 +4,78 @@ Personal Claude Code configuration for consistent development experience across 
 
 ## Quick Install
 
-### From GitHub (after pushing)
+### User-level (all projects on this machine)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/nirusan/claude-config/main/install.sh | bash
+# One-liner
+curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash
+
+# Or from clone
+git clone https://github.com/Nirusan/claude-config.git
+cd claude-config
+./install.sh --user
 ```
 
-### From local clone
+### Project-level (current project only)
 
 ```bash
-git clone git@github.com:nirusan/claude-config.git
-cd claude-config
-./install.sh
+# From clone
+git clone https://github.com/Nirusan/claude-config.git /tmp/claude-config
+cd /path/to/your/project
+/tmp/claude-config/install.sh --project
+
+# Or one-liner
+curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash -s -- --project
 ```
 
 ### In Docker
 
 ```dockerfile
-RUN curl -sSL https://raw.githubusercontent.com/nirusan/claude-config/main/install.sh | bash
+# User-level (recommended)
+RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash
+
+# Project-level
+WORKDIR /app
+RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash -s -- --project
 ```
+
+## Installation Modes
+
+| Mode | Flag | Target | Plugins | Use Case |
+|------|------|--------|---------|----------|
+| **User** | `--user` (default) | `~/.claude/` | Yes | Personal machine, all projects |
+| **Project** | `--project` | `./.claude/` | No | Shared team config, CI/CD |
+
+### User-level (`--user`)
+
+- Installs to `~/.claude/`
+- Applies to **all projects** on this machine
+- Includes plugins (mgrep, frontend-design, etc.)
+- Best for: personal dev machines
+
+### Project-level (`--project`)
+
+- Installs to `./.claude/` in current directory
+- Applies **only to this project**
+- No plugins (those are user-level only)
+- `CLAUDE.md` goes to project root
+- Best for: team projects, CI/CD, Docker
+
+### How they combine
+
+Claude Code merges configurations:
+
+```
+~/.claude/CLAUDE.md        (user preferences)
+     +
+./CLAUDE.md                (project rules)
+     +
+./.claude/settings.json    (project settings)
+     =
+Final configuration
+```
+
+Project-level can override or extend user-level settings.
 
 ## What's Included
 
@@ -60,7 +113,7 @@ RUN curl -sSL https://raw.githubusercontent.com/nirusan/claude-config/main/insta
 |-------|-------------|
 | `design-principles` | Minimal design system inspired by Linear, Notion, Stripe |
 
-### Plugins
+### Plugins (user-level only)
 
 | Plugin | Source | Description |
 |--------|--------|-------------|
@@ -73,12 +126,10 @@ RUN curl -sSL https://raw.githubusercontent.com/nirusan/claude-config/main/insta
 
 ## Updating
 
-To sync changes from this repo:
-
 ```bash
-cd ~/.claude-config  # or wherever you cloned it
+cd /path/to/claude-config
 git pull
-./install.sh
+./install.sh           # or ./install.sh --project
 ```
 
 ## Customization
@@ -101,11 +152,11 @@ Edit files in this repo, then run `./install.sh` to apply changes.
 ```
 claude-config/
 ├── README.md
-├── install.sh
+├── install.sh              # Installer with --user/--project flags
 ├── .gitignore
 ├── config/
-│   ├── CLAUDE.md          # Global preferences
-│   └── settings.json      # Model, plugins, language
+│   ├── CLAUDE.md           # Global preferences
+│   └── settings.json       # Model, plugins, language
 ├── commands/
 │   ├── validate.md
 │   ├── implement.md
@@ -126,4 +177,4 @@ claude-config/
 
 ## License
 
-Private configuration. Do not distribute without permission.
+MIT - Feel free to fork and customize.

@@ -2,15 +2,56 @@
 set -e
 
 # Claude Code Configuration Installer
-# Usage: curl -sSL https://raw.githubusercontent.com/USERNAME/claude-config/main/install.sh | bash
+# Usage:
+#   ./install.sh              # Install user-level config (default)
+#   ./install.sh --user       # Install user-level config (~/.claude/)
+#   ./install.sh --project    # Install project-level config (./.claude/)
 
-REPO_URL="${REPO_URL:-https://raw.githubusercontent.com/nirusan/claude-config/main}"
-CLAUDE_DIR="$HOME/.claude"
+REPO_URL="${REPO_URL:-https://raw.githubusercontent.com/Nirusan/claude-config/main}"
 
-echo "==> Installing Claude Code configuration..."
+# Parse arguments
+INSTALL_MODE="user"
+for arg in "$@"; do
+    case $arg in
+        --project)
+            INSTALL_MODE="project"
+            shift
+            ;;
+        --user)
+            INSTALL_MODE="user"
+            shift
+            ;;
+        --help|-h)
+            echo "Claude Code Configuration Installer"
+            echo ""
+            echo "Usage:"
+            echo "  ./install.sh              Install user-level config (default)"
+            echo "  ./install.sh --user       Install user-level config (~/.claude/)"
+            echo "  ./install.sh --project    Install project-level config (./.claude/)"
+            echo ""
+            echo "User-level:    Applies to ALL projects on this machine"
+            echo "Project-level: Applies only to the current project (no plugins)"
+            exit 0
+            ;;
+    esac
+done
+
+# Set target directory based on mode
+if [[ "$INSTALL_MODE" == "project" ]]; then
+    CLAUDE_DIR="./.claude"
+    echo "==> Installing Claude Code configuration (PROJECT-level)..."
+    echo "    Target: $(pwd)/.claude/"
+else
+    CLAUDE_DIR="$HOME/.claude"
+    echo "==> Installing Claude Code configuration (USER-level)..."
+    echo "    Target: ~/.claude/"
+fi
 
 # Create directories
-mkdir -p "$CLAUDE_DIR"/{commands,agents,skills/design-principles,plugins/marketplaces}
+mkdir -p "$CLAUDE_DIR"/{commands,agents,skills/design-principles}
+if [[ "$INSTALL_MODE" == "user" ]]; then
+    mkdir -p "$CLAUDE_DIR/plugins/marketplaces"
+fi
 
 # Detect if running from local clone or remote
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -36,8 +77,14 @@ install_file() {
 
 # Install config files
 echo "==> Copying config files..."
-install_file "config/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
-install_file "config/settings.json" "$CLAUDE_DIR/settings.json"
+if [[ "$INSTALL_MODE" == "project" ]]; then
+    # For project mode, CLAUDE.md goes to project root
+    install_file "config/CLAUDE.md" "./CLAUDE.md"
+    install_file "config/settings.json" "$CLAUDE_DIR/settings.json"
+else
+    install_file "config/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
+    install_file "config/settings.json" "$CLAUDE_DIR/settings.json"
+fi
 
 # Install commands
 echo "==> Installing commands..."
@@ -55,70 +102,77 @@ done
 echo "==> Installing skills..."
 install_file "skills/design-principles/skill.md" "$CLAUDE_DIR/skills/design-principles/skill.md"
 
-# Install plugins from GitHub
-echo "==> Installing plugins..."
+# Install plugins (user-level only)
+if [[ "$INSTALL_MODE" == "user" ]]; then
+    echo "==> Installing plugins..."
 
-# Clone or update claude-plugins-official
-OFFICIAL_PLUGINS_DIR="$CLAUDE_DIR/plugins/marketplaces/claude-plugins-official"
-if [[ -d "$OFFICIAL_PLUGINS_DIR/.git" ]]; then
-    echo "    Updating claude-plugins-official..."
-    git -C "$OFFICIAL_PLUGINS_DIR" pull --quiet
-else
-    echo "    Cloning claude-plugins-official..."
-    git clone --depth 1 --quiet https://github.com/anthropics/claude-plugins-official.git "$OFFICIAL_PLUGINS_DIR"
-fi
+    # Clone or update claude-plugins-official
+    OFFICIAL_PLUGINS_DIR="$CLAUDE_DIR/plugins/marketplaces/claude-plugins-official"
+    if [[ -d "$OFFICIAL_PLUGINS_DIR/.git" ]]; then
+        echo "    Updating claude-plugins-official..."
+        git -C "$OFFICIAL_PLUGINS_DIR" pull --quiet
+    else
+        echo "    Cloning claude-plugins-official..."
+        git clone --depth 1 --quiet https://github.com/anthropics/claude-plugins-official.git "$OFFICIAL_PLUGINS_DIR"
+    fi
 
-# Clone or update Mixedbread-Grep (mgrep)
-MGREP_DIR="$CLAUDE_DIR/plugins/marketplaces/Mixedbread-Grep"
-if [[ -d "$MGREP_DIR/.git" ]]; then
-    echo "    Updating Mixedbread-Grep..."
-    git -C "$MGREP_DIR" pull --quiet
-else
-    echo "    Cloning Mixedbread-Grep..."
-    git clone --depth 1 --quiet https://github.com/mixedbread-ai/mgrep.git "$MGREP_DIR"
-fi
+    # Clone or update Mixedbread-Grep (mgrep)
+    MGREP_DIR="$CLAUDE_DIR/plugins/marketplaces/Mixedbread-Grep"
+    if [[ -d "$MGREP_DIR/.git" ]]; then
+        echo "    Updating Mixedbread-Grep..."
+        git -C "$MGREP_DIR" pull --quiet
+    else
+        echo "    Cloning Mixedbread-Grep..."
+        git clone --depth 1 --quiet https://github.com/mixedbread-ai/mgrep.git "$MGREP_DIR"
+    fi
 
-# Create known_marketplaces.json
-cat > "$CLAUDE_DIR/plugins/known_marketplaces.json" << 'EOF'
+    # Create known_marketplaces.json
+    cat > "$CLAUDE_DIR/plugins/known_marketplaces.json" << EOF
 {
   "claude-plugins-official": {
     "source": {
       "source": "github",
       "repo": "anthropics/claude-plugins-official"
     },
-    "installLocation": "$HOME/.claude/plugins/marketplaces/claude-plugins-official"
+    "installLocation": "$CLAUDE_DIR/plugins/marketplaces/claude-plugins-official"
   },
   "Mixedbread-Grep": {
     "source": {
       "source": "github",
       "repo": "mixedbread-ai/mgrep"
     },
-    "installLocation": "$HOME/.claude/plugins/marketplaces/Mixedbread-Grep"
+    "installLocation": "$CLAUDE_DIR/plugins/marketplaces/Mixedbread-Grep"
   }
 }
 EOF
+fi
 
-# Fix paths in known_marketplaces.json
-sed -i.bak "s|\$HOME|$HOME|g" "$CLAUDE_DIR/plugins/known_marketplaces.json"
-rm -f "$CLAUDE_DIR/plugins/known_marketplaces.json.bak"
-
+# Summary
 echo ""
 echo "==> Installation complete!"
 echo ""
-echo "Installed:"
-echo "  - Global CLAUDE.md"
-echo "  - settings.json (model: opus, language: French)"
-echo "  - 7 custom commands"
+if [[ "$INSTALL_MODE" == "project" ]]; then
+    echo "Installed (PROJECT-level):"
+    echo "  - ./CLAUDE.md (project root)"
+    echo "  - ./.claude/settings.json"
+else
+    echo "Installed (USER-level):"
+    echo "  - ~/.claude/CLAUDE.md"
+    echo "  - ~/.claude/settings.json (model: opus, language: French)"
+    echo "  - 2 plugin marketplaces"
+    echo ""
+    echo "Enabled plugins:"
+    echo "  - mgrep (semantic search)"
+    echo "  - frontend-design"
+    echo "  - code-review"
+    echo "  - typescript-lsp"
+    echo "  - security-guidance"
+    echo "  - context7"
+fi
+echo ""
+echo "Also installed:"
+echo "  - 7 custom commands (/validate, /implement, etc.)"
 echo "  - 4 custom agents"
 echo "  - 1 skill (design-principles)"
-echo "  - 2 plugin marketplaces"
-echo ""
-echo "Enabled plugins:"
-echo "  - mgrep (semantic search)"
-echo "  - frontend-design"
-echo "  - code-review"
-echo "  - typescript-lsp"
-echo "  - security-guidance"
-echo "  - context7"
 echo ""
 echo "Note: Restart Claude Code for changes to take effect."
