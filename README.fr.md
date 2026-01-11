@@ -1,8 +1,7 @@
 <div align="center">
 
-### [🇬🇧 English](README.md)&nbsp;&nbsp;|&nbsp;&nbsp;🇫🇷 Français
-
----
+[![English](https://img.shields.io/badge/lang-English-white?style=for-the-badge)](README.md)
+![Français](https://img.shields.io/badge/lang-Français-blue?style=for-the-badge)
 
 </div>
 
