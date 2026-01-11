@@ -46,12 +46,12 @@ cd /path/to/your/project
 ### In Docker
 
 ```dockerfile
-# User-level (recommended)
-RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash
+# User-level (recommended) - use --yes to skip confirmation
+RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash -s -- --yes
 
 # Project-level
 WORKDIR /app
-RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash -s -- --project
+RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash -s -- --project --yes
 ```
 
 ## Installation Modes
@@ -60,6 +60,24 @@ RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/insta
 |------|------|--------|---------|----------|
 | **User** | `--user` (default) | `~/.claude/` | Yes | Personal machine, all projects |
 | **Project** | `--project` | `./.claude/` | No | Shared team config, CI/CD |
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--yes` or `-y` | Skip confirmation prompt (for CI/Docker) |
+
+### Existing config protection
+
+If you already have a Claude config, the installer will:
+1. **Warn you** (EN/FR) that your config will be overwritten
+2. **Ask for confirmation** (press `y` to continue, any other key to abort)
+3. **Create a backup** at `~/.claude-backup-YYYYMMDD-HHMMSS/`
+
+To restore your previous config:
+```bash
+cp -rP ~/.claude-backup-YYYYMMDD-HHMMSS/* ~/.claude/
+```
 
 ### How configurations combine
 

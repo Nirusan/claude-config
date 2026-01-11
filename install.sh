@@ -11,6 +11,7 @@ REPO_URL="${REPO_URL:-https://raw.githubusercontent.com/Nirusan/claude-config/ma
 
 # Parse arguments
 INSTALL_MODE="user"
+SKIP_CONFIRM="false"
 for arg in "$@"; do
     case $arg in
         --project)
@@ -21,6 +22,10 @@ for arg in "$@"; do
             INSTALL_MODE="user"
             shift
             ;;
+        --yes|-y)
+            SKIP_CONFIRM="true"
+            shift
+            ;;
         --help|-h)
             echo "Claude Code Configuration Installer"
             echo ""
@@ -28,6 +33,7 @@ for arg in "$@"; do
             echo "  ./install.sh              Install user-level config (default)"
             echo "  ./install.sh --user       Install user-level config (~/.claude/)"
             echo "  ./install.sh --project    Install project-level config (./.claude/)"
+            echo "  ./install.sh --yes|-y     Skip confirmation prompt"
             echo ""
             echo "User-level:    Applies to ALL projects on this machine"
             echo "Project-level: Applies only to the current project (no plugins)"
@@ -45,6 +51,37 @@ else
     CLAUDE_DIR="$HOME/.claude"
     echo "==> Installing Claude Code configuration (USER-level)..."
     echo "    Target: ~/.claude/"
+fi
+
+# Backup existing config if present
+BACKUP_DIR="$HOME/.claude-backup-$(date +%Y%m%d-%H%M%S)"
+if [[ -d "$CLAUDE_DIR" && "$(ls -A "$CLAUDE_DIR" 2>/dev/null)" ]]; then
+    echo ""
+    echo "⚠️  WARNING / ATTENTION"
+    echo "────────────────────────────────────────"
+    echo "EN: An existing Claude config was found at $CLAUDE_DIR"
+    echo "    This script will OVERWRITE your current configuration."
+    echo "    A backup will be created at: $BACKUP_DIR"
+    echo ""
+    echo "FR: Une configuration Claude existante a été trouvée dans $CLAUDE_DIR"
+    echo "    Ce script va ÉCRASER votre configuration actuelle."
+    echo "    Une sauvegarde sera créée dans : $BACKUP_DIR"
+    echo "────────────────────────────────────────"
+    echo ""
+    if [[ "$SKIP_CONFIRM" != "true" ]]; then
+        # Read from /dev/tty to work with curl | bash
+        read -p "Continue? / Continuer ? [y/N] " -n 1 -r < /dev/tty
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Aborted. / Abandon."
+            exit 1
+        fi
+    else
+        echo "(--yes flag: skipping confirmation / option --yes : confirmation ignorée)"
+    fi
+    echo "==> Backing up existing config to $BACKUP_DIR..."
+    cp -rP "$CLAUDE_DIR" "$BACKUP_DIR"
+    echo "    Backup complete. Restore with: cp -rP $BACKUP_DIR ~/.claude"
 fi
 
 # Create directories
