@@ -127,6 +127,7 @@ if [[ "$INSTALL_MODE" == "user" ]]; then
     fi
 
     # Create known_marketplaces.json
+    CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     cat > "$CLAUDE_DIR/plugins/known_marketplaces.json" << EOF
 {
   "claude-plugins-official": {
@@ -134,14 +135,16 @@ if [[ "$INSTALL_MODE" == "user" ]]; then
       "source": "github",
       "repo": "anthropics/claude-plugins-official"
     },
-    "installLocation": "$CLAUDE_DIR/plugins/marketplaces/claude-plugins-official"
+    "installLocation": "$CLAUDE_DIR/plugins/marketplaces/claude-plugins-official",
+    "lastUpdated": "$CURRENT_DATE"
   },
   "Mixedbread-Grep": {
     "source": {
       "source": "github",
       "repo": "mixedbread-ai/mgrep"
     },
-    "installLocation": "$CLAUDE_DIR/plugins/marketplaces/Mixedbread-Grep"
+    "installLocation": "$CLAUDE_DIR/plugins/marketplaces/Mixedbread-Grep",
+    "lastUpdated": "$CURRENT_DATE"
   }
 }
 EOF
