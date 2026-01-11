@@ -197,6 +197,43 @@ Plugins extend Claude Code with additional capabilities.
 
 ---
 
+### MCP Servers (Optional)
+
+MCP (Model Context Protocol) servers extend Claude Code with external service integrations. Unlike plugins, MCP servers require separate API keys and are configured in `~/.claude.json`.
+
+**Included template:** `config/mcp-servers.template.json`
+
+| Server | Purpose | Auth Type |
+|--------|---------|-----------|
+| `brave-search` | Web search | API Key (get one at [brave.com/search/api](https://brave.com/search/api)) |
+| `firecrawl` | Advanced web scraping | API Key (get one at [firecrawl.dev](https://firecrawl.dev)) |
+| `supabase` | Database management | OAuth (no key needed) |
+
+**Setup:**
+
+1. Copy the template to your Claude config:
+```bash
+# First time - create new file
+cp config/mcp-servers.template.json ~/.claude.json
+
+# Or merge with existing config
+cat config/mcp-servers.template.json
+# Then manually add the mcpServers section to your ~/.claude.json
+```
+
+2. Replace the placeholder API keys:
+```bash
+# Edit ~/.claude.json and replace:
+# - YOUR_BRAVE_API_KEY_HERE
+# - YOUR_FIRECRAWL_API_KEY_HERE
+```
+
+3. Restart Claude Code
+
+**Note:** The `~/.claude.json` file contains API keys and should **never** be committed to version control.
+
+---
+
 ## Updating
 
 ### Pull latest from repo
@@ -306,7 +343,8 @@ claude-config/
 ├── .gitignore
 ├── config/
 │   ├── CLAUDE.md           # Code conventions
-│   └── settings.json       # Model, plugins, language
+│   ├── settings.json       # Model, plugins, language
+│   └── mcp-servers.template.json  # MCP servers template (requires API keys)
 ├── commands/
 │   ├── validate.md         # Run lint/build/tests
 │   ├── implement.md        # Full task workflow

@@ -197,6 +197,43 @@ Les plugins étendent Claude Code avec des capacités supplémentaires.
 
 ---
 
+### Serveurs MCP (Optionnel)
+
+Les serveurs MCP (Model Context Protocol) étendent Claude Code avec des intégrations de services externes. Contrairement aux plugins, les serveurs MCP nécessitent des clés API séparées et sont configurés dans `~/.claude.json`.
+
+**Template inclus :** `config/mcp-servers.template.json`
+
+| Serveur | Utilité | Type d'auth |
+|---------|---------|-------------|
+| `brave-search` | Recherche web | Clé API (obtenir sur [brave.com/search/api](https://brave.com/search/api)) |
+| `firecrawl` | Scraping web avancé | Clé API (obtenir sur [firecrawl.dev](https://firecrawl.dev)) |
+| `supabase` | Gestion de base de données | OAuth (pas de clé nécessaire) |
+
+**Configuration :**
+
+1. Copier le template vers ta config Claude :
+```bash
+# Première fois - créer le fichier
+cp config/mcp-servers.template.json ~/.claude.json
+
+# Ou fusionner avec config existante
+cat config/mcp-servers.template.json
+# Puis ajouter manuellement la section mcpServers à ~/.claude.json
+```
+
+2. Remplacer les placeholders de clés API :
+```bash
+# Éditer ~/.claude.json et remplacer :
+# - YOUR_BRAVE_API_KEY_HERE
+# - YOUR_FIRECRAWL_API_KEY_HERE
+```
+
+3. Redémarrer Claude Code
+
+**Note :** Le fichier `~/.claude.json` contient des clés API et ne doit **jamais** être commité dans le contrôle de version.
+
+---
+
 ## Mise à jour
 
 ### Récupérer les dernières mises à jour du repo
@@ -306,7 +343,8 @@ claude-config/
 ├── .gitignore
 ├── config/
 │   ├── CLAUDE.md           # Conventions de code
-│   └── settings.json       # Model, plugins, langue
+│   ├── settings.json       # Model, plugins, langue
+│   └── mcp-servers.template.json  # Template serveurs MCP (nécessite clés API)
 ├── commands/
 │   ├── validate.md         # Lancer lint/build/tests
 │   ├── implement.md        # Workflow complet de tâche
