@@ -1,7 +1,9 @@
 <div align="center">
 
-[![English](https://img.shields.io/badge/lang-English-white?style=for-the-badge)](README.md)
-![Français](https://img.shields.io/badge/lang-Français-blue?style=for-the-badge)
+**🌐 Language / Langue**
+
+[![English_→](https://img.shields.io/badge/English_→-gray?style=for-the-badge&logo=readme&logoColor=white)](README.md)
+![Français](https://img.shields.io/badge/Français-blue?style=for-the-badge&logo=readme&logoColor=white)
 
 </div>
 
