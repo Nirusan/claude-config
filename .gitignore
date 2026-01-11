@@ -2,6 +2,9 @@
 .DS_Store
 Thumbs.db
 
+# Local-only commands (user-specific paths)
+commands/sync-config.md
+
 # Editor
 .idea/
 .vscode/

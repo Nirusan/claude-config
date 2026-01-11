@@ -126,11 +126,51 @@ Project-level can override or extend user-level settings.
 
 ## Updating
 
+### Pull latest from repo
+
 ```bash
 cd /path/to/claude-config
 git pull
 ./install.sh           # or ./install.sh --project
 ```
+
+### Sync local changes to repo
+
+If you modify config locally in `~/.claude/`, sync it back to the repo:
+
+```bash
+cd /path/to/claude-config
+./sync.sh                                    # Copy ~/.claude/ → repo
+git add -A && git commit -m "sync" && git push
+```
+
+**What gets synced:**
+- `~/.claude/CLAUDE.md` → `config/CLAUDE.md`
+- `~/.claude/settings.json` → `config/settings.json`
+- `~/.claude/commands/*.md` → `commands/`
+- `~/.claude/agents/*.md` → `agents/`
+- `~/.claude/skills/` → `skills/`
+
+### Optional: /sync-config command
+
+Create a local Claude Code command for quick syncing:
+
+```bash
+# Create ~/.claude/commands/sync-config.md
+cat > ~/.claude/commands/sync-config.md << 'EOF'
+---
+allowed-tools: Bash(*)
+description: Sync local Claude config to GitHub repo
+---
+
+Run sync and show status:
+\`\`\`bash
+cd ~/path/to/claude-config && ./sync.sh && git status
+\`\`\`
+EOF
+```
+
+Then use `/sync-config` in Claude Code. This command is gitignored since paths are user-specific.
 
 ## Customization
 
@@ -153,6 +193,7 @@ Edit files in this repo, then run `./install.sh` to apply changes.
 claude-config/
 ├── README.md
 ├── install.sh              # Installer with --user/--project flags
+├── sync.sh                 # Sync ~/.claude/ back to repo
 ├── .gitignore
 ├── config/
 │   ├── CLAUDE.md           # Global preferences
