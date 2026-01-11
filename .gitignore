@@ -1,0 +1,19 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Sensitive files (should not exist here, but just in case)
+*.credentials*
+*.secret*
+.env
+.env.*
+
+# Backup files
+*.bak
+*.backup
