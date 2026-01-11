@@ -1,6 +1,14 @@
+🇬🇧 English | [🇫🇷 Français](README.fr.md)
+
 # Claude Code Configuration
 
 Personal Claude Code configuration for consistent development experience across machines.
+
+## Prerequisites
+
+- **git** - for cloning and syncing
+- **curl** - for one-liner install
+- **bash** - shell (macOS/Linux/WSL)
 
 ## Quick Install
 
@@ -19,13 +27,13 @@ cd claude-config
 ### Project-level (current project only)
 
 ```bash
-# From clone
+# One-liner
+curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash -s -- --project
+
+# Or from clone
 git clone https://github.com/Nirusan/claude-config.git /tmp/claude-config
 cd /path/to/your/project
 /tmp/claude-config/install.sh --project
-
-# Or one-liner
-curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/install.sh | bash -s -- --project
 ```
 
 ### In Docker
@@ -46,29 +54,14 @@ RUN curl -sSL https://raw.githubusercontent.com/Nirusan/claude-config/main/insta
 | **User** | `--user` (default) | `~/.claude/` | Yes | Personal machine, all projects |
 | **Project** | `--project` | `./.claude/` | No | Shared team config, CI/CD |
 
-### User-level (`--user`)
+### How configurations combine
 
-- Installs to `~/.claude/`
-- Applies to **all projects** on this machine
-- Includes plugins (mgrep, frontend-design, etc.)
-- Best for: personal dev machines
-
-### Project-level (`--project`)
-
-- Installs to `./.claude/` in current directory
-- Applies **only to this project**
-- No plugins (those are user-level only)
-- `CLAUDE.md` goes to project root
-- Best for: team projects, CI/CD, Docker
-
-### How they combine
-
-Claude Code merges configurations:
+Claude Code merges configurations from multiple levels:
 
 ```
-~/.claude/CLAUDE.md        (user preferences)
+~/.claude/CLAUDE.md        (user preferences - applies everywhere)
      +
-./CLAUDE.md                (project rules)
+./CLAUDE.md                (project rules - this repo only)
      +
 ./.claude/settings.json    (project settings)
      =
@@ -77,52 +70,127 @@ Final configuration
 
 Project-level can override or extend user-level settings.
 
+---
+
 ## What's Included
 
 ### Global Configuration
 
-| File | Description |
+#### `config/CLAUDE.md` - Code Conventions
+
+Defines coding standards applied to all projects:
+
+| Rule | Description |
 |------|-------------|
-| `config/CLAUDE.md` | Global preferences (pnpm, code style, naming conventions) |
-| `config/settings.json` | Model (opus), language (French), enabled plugins |
+| **Package Manager** | Always use `pnpm`, never npm or yarn |
+| **Language** | English for code, commits, docs |
+| **Code Style** | Functional/declarative, no classes |
+| **Naming** | `kebab-case` folders, `camelCase` functions, `PascalCase` components |
+| **React/Next.js** | Prefer Server Components, minimize `'use client'` |
+| **UI** | Tailwind CSS + shadcn/ui |
+| **Performance** | Optimize Web Vitals, WebP images, lazy loading |
+
+#### `config/settings.json` - Claude Settings
+
+```json
+{
+  "model": "opus",
+  "language": "French",
+  "permissions": { "allow": ["Bash(pnpm ...)"] },
+  "enabledPlugins": { "mgrep": true, "frontend-design": true, ... }
+}
+```
+
+| Setting | Value | Description |
+|---------|-------|-------------|
+| `model` | `opus` | Use Claude Opus (most capable) |
+| `language` | `French` | Claude responds in French |
+| `permissions` | pnpm commands | Auto-allow pnpm dev/build/test/etc. |
+| `enabledPlugins` | 6 plugins | Plugins activated by default |
+
+---
 
 ### Custom Commands
 
-| Command | Description |
-|---------|-------------|
-| `/validate` | Run lint, build, and E2E tests in sequence |
-| `/implement` | Full implementation workflow with validation |
-| `/db-check` | Check Supabase advisors (security, performance) |
-| `/git-add-commit-push` | Git workflow with auto-generated messages |
-| `/next-task` | Find next incomplete task from MVP plan |
-| `/refresh-context` | Re-read project documentation |
-| `/update-progress` | Update progress.txt with completed tasks |
+Commands are invoked with `/command-name` in Claude Code.
+
+| Command | When to Use | What it Does |
+|---------|-------------|--------------|
+| `/validate` | Before committing | Runs `pnpm lint` → `pnpm build` → `pnpm test:e2e` in sequence. Stops on first failure. |
+| `/implement <task>` | Starting a new task | Full workflow: read docs → plan with todos → implement → validate → code review → commit |
+| `/db-check` | After DB changes | Checks Supabase advisors for security issues (missing RLS) and performance problems |
+| `/git-add-commit-push` | Ready to commit | Stages all, generates commit message from diff, pushes to current branch |
+| `/next-task` | Between tasks | Reads MVP plan and progress file, identifies the next incomplete task |
+| `/refresh-context` | Starting a session | Re-reads CLAUDE.md, progress.txt, schema.sql to understand project state |
+| `/update-progress` | After completing work | Adds entry to progress.txt with date, files changed, what was done |
+
+**Example:**
+```
+> /implement Add dark mode toggle to settings page
+
+Claude will:
+1. Read project docs (CLAUDE.md, progress.txt)
+2. Create todo list with subtasks
+3. Implement the feature
+4. Run lint/build/tests
+5. Review the code
+6. Update progress.txt
+7. Commit with descriptive message
+```
+
+---
 
 ### Custom Agents
 
-| Agent | Description |
-|-------|-------------|
-| `code-reviewer` | Expert code review for quality and security |
-| `nextjs-developer` | Next.js 14+ specialist (App Router, RSC, Server Actions) |
-| `supabase-developer` | Supabase expert (PostgreSQL, Auth, RLS) |
-| `prompt-engineer` | Prompt optimization for Claude API |
+Agents are specialized assistants that Claude spawns for specific tasks. They're triggered automatically based on context or explicitly via the Task tool.
+
+| Agent | Expertise | Triggered When |
+|-------|-----------|----------------|
+| `code-reviewer` | Code quality, security, best practices | After code changes, during `/implement` |
+| `nextjs-developer` | Next.js 14+, App Router, RSC, Server Actions | Working on Next.js code |
+| `supabase-developer` | PostgreSQL, Auth, RLS policies | Database queries, auth issues |
+| `prompt-engineer` | Claude API prompts, context extraction | Writing AI suggestion prompts |
+
+**What agents provide:**
+- `code-reviewer`: Checks for security vulnerabilities, code smells, suggests improvements
+- `nextjs-developer`: Knows async APIs (`await cookies()`), proper data fetching patterns
+- `supabase-developer`: Writes RLS policies, optimizes queries, handles auth flows
+- `prompt-engineer`: Optimizes prompts for Twitter/Reddit/LinkedIn response generation
+
+---
 
 ### Skills
 
-| Skill | Description |
-|-------|-------------|
-| `design-principles` | Minimal design system inspired by Linear, Notion, Stripe |
+Skills are detailed guides that Claude follows for specific domains. They're activated automatically when relevant.
+
+| Skill | Purpose |
+|-------|---------|
+| `design-principles` | Enforces a precise, minimal design system inspired by Linear, Notion, and Stripe |
+
+**`design-principles` includes:**
+- 4px grid system for spacing
+- Typography hierarchy (11px-32px scale)
+- Shadow/elevation patterns
+- Color usage rules (gray for structure, color for meaning)
+- Anti-patterns to avoid (no bouncy animations, no gradient decorations)
+- Dark mode considerations
+
+---
 
 ### Plugins (user-level only)
 
-| Plugin | Source | Description |
-|--------|--------|-------------|
-| `mgrep` | mixedbread-ai/mgrep | Semantic search |
-| `frontend-design` | anthropics/claude-plugins-official | UI component design |
-| `code-review` | anthropics/claude-plugins-official | Code review automation |
-| `typescript-lsp` | anthropics/claude-plugins-official | TypeScript language server |
-| `security-guidance` | anthropics/claude-plugins-official | Security best practices |
-| `context7` | anthropics/claude-plugins-official | Library documentation |
+Plugins extend Claude Code with additional capabilities.
+
+| Plugin | What it Does |
+|--------|--------------|
+| `mgrep` | Semantic code search using embeddings (better than grep for concepts) |
+| `frontend-design` | Generates distinctive, production-ready UI components |
+| `code-review` | Automated code review with security and quality checks |
+| `typescript-lsp` | TypeScript language server integration |
+| `security-guidance` | Security best practices and vulnerability detection |
+| `context7` | Fetches up-to-date library documentation |
+
+---
 
 ## Updating
 
@@ -131,12 +199,12 @@ Project-level can override or extend user-level settings.
 ```bash
 cd /path/to/claude-config
 git pull
-./install.sh           # or ./install.sh --project
+./install.sh
 ```
 
 ### Sync local changes to repo
 
-If you modify config locally in `~/.claude/`, sync it back to the repo:
+If you modify config locally in `~/.claude/`, sync it back:
 
 ```bash
 cd /path/to/claude-config
@@ -153,10 +221,9 @@ git add -A && git commit -m "sync" && git push
 
 ### Optional: /sync-config command
 
-Create a local Claude Code command for quick syncing:
+Create a local command for quick syncing (gitignored, paths are user-specific):
 
 ```bash
-# Create ~/.claude/commands/sync-config.md
 cat > ~/.claude/commands/sync-config.md << 'EOF'
 ---
 allowed-tools: Bash(*)
@@ -164,57 +231,96 @@ description: Sync local Claude config to GitHub repo
 ---
 
 Run sync and show status:
-\`\`\`bash
+```bash
 cd ~/path/to/claude-config && ./sync.sh && git status
-\`\`\`
+```
 EOF
 ```
 
-Then use `/sync-config` in Claude Code. This command is gitignored since paths are user-specific.
+---
 
 ## Customization
 
-Edit files in this repo, then run `./install.sh` to apply changes.
-
 ### Adding a new command
 
-1. Create `commands/my-command.md`
+1. Create `commands/my-command.md`:
+```markdown
+---
+allowed-tools: Bash(*), Read, Write
+description: What this command does
+---
+
+## Instructions for Claude
+
+Explain what Claude should do when this command is invoked.
+```
+
 2. Run `./install.sh`
 3. Use with `/my-command` in Claude Code
 
 ### Adding a new agent
 
-1. Create `agents/my-agent.md`
+1. Create `agents/my-agent.md`:
+```markdown
+---
+name: my-agent
+description: When to use this agent
+tools: Read, Write, Bash
+model: sonnet
+---
+
+You are an expert in X. Your role is to...
+```
+
 2. Run `./install.sh`
+
+### Adding a new skill
+
+1. Create `skills/my-skill/skill.md`:
+```markdown
+---
+name: my-skill
+description: What this skill covers
+---
+
+# Detailed guidelines...
+```
+
+2. Run `./install.sh`
+
+---
 
 ## File Structure
 
 ```
 claude-config/
-├── README.md
-├── install.sh              # Installer with --user/--project flags
-├── sync.sh                 # Sync ~/.claude/ back to repo
+├── README.md               # English documentation
+├── README.fr.md            # French documentation
+├── install.sh              # Installer (--user/--project)
+├── sync.sh                 # Sync ~/.claude/ → repo
 ├── .gitignore
 ├── config/
-│   ├── CLAUDE.md           # Global preferences
+│   ├── CLAUDE.md           # Code conventions
 │   └── settings.json       # Model, plugins, language
 ├── commands/
-│   ├── validate.md
-│   ├── implement.md
-│   ├── db-check.md
+│   ├── validate.md         # Run lint/build/tests
+│   ├── implement.md        # Full task workflow
+│   ├── db-check.md         # Supabase advisors
 │   ├── git-add-commit-push.md
-│   ├── next-task.md
-│   ├── refresh-context.md
-│   └── update-progress.md
+│   ├── next-task.md        # Find next MVP task
+│   ├── refresh-context.md  # Re-read project docs
+│   └── update-progress.md  # Update progress file
 ├── agents/
-│   ├── code-reviewer.md
-│   ├── nextjs-developer.md
-│   ├── supabase-developer.md
-│   └── prompt-engineer.md
+│   ├── code-reviewer.md    # Code quality expert
+│   ├── nextjs-developer.md # Next.js specialist
+│   ├── supabase-developer.md # Database expert
+│   └── prompt-engineer.md  # Prompt optimization
 └── skills/
     └── design-principles/
-        └── skill.md
+        └── skill.md        # Design system guide
 ```
+
+---
 
 ## License
 
