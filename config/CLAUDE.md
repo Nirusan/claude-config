@@ -59,6 +59,7 @@ When creating new commands, agents, or instructions, always write them in Englis
 - **Tailwind CSS** + **shadcn/ui** (based on Radix)
 - Mobile-first responsive design
 - No additional UI packages unless necessary
+- **Cursor pointer** on all interactive elements (buttons, links, selects, etc.) — add global CSS rule in `globals.css` if missing
 
 ## Performance
 
