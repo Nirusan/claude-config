@@ -61,12 +61,16 @@ if [[ -d "$CLAUDE_DIR" && "$(ls -A "$CLAUDE_DIR" 2>/dev/null)" ]]; then
     echo "────────────────────────────────────────"
     echo "EN: An existing Claude config was found at $CLAUDE_DIR"
     echo "    This script will OVERWRITE your current configuration."
-    echo "    Your enabledPlugins and permissions will be MERGED (preserved)."
+    if [[ "$INSTALL_MODE" == "user" ]]; then
+        echo "    Your enabledPlugins and permissions will be MERGED (preserved)."
+    fi
     echo "    A backup will be created at: $BACKUP_DIR"
     echo ""
     echo "FR: Une configuration Claude existante a été trouvée dans $CLAUDE_DIR"
     echo "    Ce script va ÉCRASER votre configuration actuelle."
-    echo "    Vos enabledPlugins et permissions seront FUSIONNÉS (préservés)."
+    if [[ "$INSTALL_MODE" == "user" ]]; then
+        echo "    Vos enabledPlugins et permissions seront FUSIONNÉS (préservés)."
+    fi
     echo "    Une sauvegarde sera créée dans : $BACKUP_DIR"
     echo "────────────────────────────────────────"
     echo ""
