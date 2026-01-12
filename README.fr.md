@@ -18,6 +18,7 @@ Configuration personnelle de Claude Code pour une expérience de développement 
 - **git** - pour cloner et synchroniser
 - **curl** - pour l'installation one-liner
 - **bash** - shell (macOS/Linux/WSL)
+- **jq** (optionnel) - pour fusionner les settings lors des mises à jour
 
 ## Installation rapide
 
@@ -75,6 +76,9 @@ Si vous avez déjà une config Claude, l'installateur va :
 1. **Vous avertir** (EN/FR) que votre config sera écrasée
 2. **Demander confirmation** (appuyer sur `y` pour continuer, autre touche pour annuler)
 3. **Créer une sauvegarde** dans `~/.claude-backup-YYYYMMDD-HHMMSS/`
+4. **Fusionner vos settings** (nécessite `jq`) :
+   - `enabledPlugins` — vos plugins existants sont préservés
+   - `permissions.allow` — vos commandes autorisées sont préservées
 
 Pour restaurer votre ancienne config :
 ```bash
@@ -111,9 +115,13 @@ Définit les standards de code appliqués à tous les projets :
 |-------|-------------|
 | **Package Manager** | Toujours `pnpm`, jamais npm ou yarn |
 | **Langue** | Anglais pour le code, commits, docs |
+| **TypeScript** | Mode strict, éviter `any` (utiliser `unknown` ou generics) |
+| **Imports** | Imports absolus avec alias `@/`, pas de chemins relatifs |
 | **Style de code** | Fonctionnel/déclaratif, pas de classes |
 | **Naming** | `kebab-case` dossiers, `camelCase` fonctions, `PascalCase` composants |
 | **React/Next.js** | Préférer Server Components, minimiser `'use client'` |
+| **State Management** | Utiliser Zustand plutôt que React Context pour le state global |
+| **Data Fetching** | Préférer Server Actions aux API Routes |
 | **UI** | Tailwind CSS + shadcn/ui |
 | **Performance** | Optimiser Web Vitals, images WebP, lazy loading |
 
