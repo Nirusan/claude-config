@@ -61,10 +61,12 @@ if [[ -d "$CLAUDE_DIR" && "$(ls -A "$CLAUDE_DIR" 2>/dev/null)" ]]; then
     echo "────────────────────────────────────────"
     echo "EN: An existing Claude config was found at $CLAUDE_DIR"
     echo "    This script will OVERWRITE your current configuration."
+    echo "    Your enabledPlugins will be MERGED (preserved)."
     echo "    A backup will be created at: $BACKUP_DIR"
     echo ""
     echo "FR: Une configuration Claude existante a été trouvée dans $CLAUDE_DIR"
     echo "    Ce script va ÉCRASER votre configuration actuelle."
+    echo "    Vos enabledPlugins seront FUSIONNÉS (préservés)."
     echo "    Une sauvegarde sera créée dans : $BACKUP_DIR"
     echo "────────────────────────────────────────"
     echo ""
@@ -115,6 +117,31 @@ install_file() {
     fi
 }
 
+# Function to merge enabledPlugins from existing settings.json
+merge_enabled_plugins() {
+    local settings_file="$1"
+    local backup_settings="$BACKUP_DIR/settings.json"
+
+    # Only merge if backup exists and has enabledPlugins
+    if [[ ! -f "$backup_settings" ]]; then
+        return
+    fi
+
+    # Check if jq is available
+    if command -v jq &> /dev/null; then
+        # Use jq to merge enabledPlugins (existing plugins take precedence for conflicts)
+        local merged
+        merged=$(jq -s '.[0].enabledPlugins as $new | .[1].enabledPlugins as $old | .[0] | .enabledPlugins = ($new + $old)' "$settings_file" "$backup_settings" 2>/dev/null)
+        if [[ -n "$merged" ]]; then
+            echo "$merged" > "$settings_file"
+            echo "    Merged existing enabledPlugins with new settings"
+        fi
+    else
+        echo "    Note: Install 'jq' to automatically merge enabledPlugins"
+        echo "    Your previous plugins are preserved in: $backup_settings"
+    fi
+}
+
 # Install config files
 echo "==> Copying config files..."
 if [[ "$INSTALL_MODE" == "project" ]]; then
@@ -124,6 +151,8 @@ if [[ "$INSTALL_MODE" == "project" ]]; then
 else
     install_file "config/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
     install_file "config/settings.json" "$CLAUDE_DIR/settings.json"
+    # Merge existing enabledPlugins from backup
+    merge_enabled_plugins "$CLAUDE_DIR/settings.json"
 fi
 
 # Install commands
