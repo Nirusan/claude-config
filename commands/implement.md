@@ -25,6 +25,18 @@ Task to implement: "$ARGUMENTS"
 3. Mark todos as completed as you go
 4. If you need library documentation, use Context7
 
+### Phase 2.5: Tests E2E (if relevant)
+
+If the feature adds new user-facing functionality:
+1. Create/update E2E tests in `tests/e2e/`
+2. Follow existing patterns (auth.spec.ts, onboarding.spec.ts)
+3. Use data-testid attributes for selectors
+
+**Skip if:**
+- Minor fix (typo, style, refactor)
+- Internal change with no UI impact
+- Existing tests already cover the case
+
 ### Phase 3: Validate
 
 Run in order (stop on failure):
