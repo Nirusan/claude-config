@@ -11,6 +11,8 @@
 
 Personal Claude Code configuration for consistent development experience across machines.
 
+> ⚠️ **Warning**: This will **overwrite** your existing `~/.claude/` configuration. A backup is automatically created at `~/.claude-backup-YYYYMMDD-HHMMSS/` before installation.
+
 ## Prerequisites
 
 - **git** - for cloning and syncing

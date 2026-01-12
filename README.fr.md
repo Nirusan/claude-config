@@ -11,6 +11,8 @@
 
 Configuration personnelle de Claude Code pour une expérience de développement cohérente sur toutes les machines.
 
+> ⚠️ **Attention** : Ceci va **écraser** votre configuration `~/.claude/` existante. Une sauvegarde est automatiquement créée dans `~/.claude-backup-YYYYMMDD-HHMMSS/` avant l'installation.
+
 ## Prérequis
 
 - **git** - pour cloner et synchroniser
