@@ -50,7 +50,7 @@ When creating new commands, agents, or instructions, always write them in Englis
 - Prefer **Server Components** (RSC)
 - Wrap client components in `<Suspense>` with fallback
 - Dynamic imports for non-critical components
-- **State management**: prefer **Zustand** or **Jotai** over React Context for global state
+- **State management**: use **Zustand** over React Context for global state
 - **Data fetching**: prefer **Server Actions** over API Routes when possible
 - Follow Next.js docs for Data Fetching, Rendering, Routing
 
