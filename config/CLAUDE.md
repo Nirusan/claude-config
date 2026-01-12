@@ -21,6 +21,12 @@ Global instructions applied to all Next.js/React projects.
 
 When creating new commands, agents, or instructions, always write them in English.
 
+## TypeScript
+
+- **Strict mode** enabled (`"strict": true` in tsconfig)
+- Avoid `any` — use `unknown`, generics, or proper typing instead
+- Prefer type inference when obvious, explicit types for function signatures
+
 ## Code Style
 
 - Functional and declarative, **no classes**
@@ -28,6 +34,7 @@ When creating new commands, agents, or instructions, always write them in Englis
 - Descriptive names with auxiliary verbs (`isLoading`, `hasError`, `canSubmit`)
 - `function` keyword for pure functions
 - Concise syntax (avoid unnecessary braces in simple conditionals)
+- **Absolute imports** with `@/` alias instead of relative paths (`../../../`)
 
 ## Naming Conventions
 
@@ -43,6 +50,8 @@ When creating new commands, agents, or instructions, always write them in Englis
 - Prefer **Server Components** (RSC)
 - Wrap client components in `<Suspense>` with fallback
 - Dynamic imports for non-critical components
+- **State management**: use **Zustand** over React Context for global state
+- **Data fetching**: prefer **Server Actions** over API Routes when possible
 - Follow Next.js docs for Data Fetching, Rendering, Routing
 
 ## UI & Styling

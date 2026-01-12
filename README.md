@@ -18,6 +18,7 @@ Personal Claude Code configuration for consistent development experience across 
 - **git** - for cloning and syncing
 - **curl** - for one-liner install
 - **bash** - shell (macOS/Linux/WSL)
+- **jq** (optional) - for merging settings during updates
 
 ## Quick Install
 
@@ -75,6 +76,9 @@ If you already have a Claude config, the installer will:
 1. **Warn you** (EN/FR) that your config will be overwritten
 2. **Ask for confirmation** (press `y` to continue, any other key to abort)
 3. **Create a backup** at `~/.claude-backup-YYYYMMDD-HHMMSS/`
+4. **Merge your settings** (requires `jq`):
+   - `enabledPlugins` — your existing plugins are preserved
+   - `permissions.allow` — your custom allowed commands are preserved
 
 To restore your previous config:
 ```bash
@@ -111,9 +115,13 @@ Defines coding standards applied to all projects:
 |------|-------------|
 | **Package Manager** | Always use `pnpm`, never npm or yarn |
 | **Language** | English for code, commits, docs |
+| **TypeScript** | Strict mode, avoid `any` (use `unknown` or generics) |
+| **Imports** | Absolute imports with `@/` alias, no relative paths |
 | **Code Style** | Functional/declarative, no classes |
 | **Naming** | `kebab-case` folders, `camelCase` functions, `PascalCase` components |
 | **React/Next.js** | Prefer Server Components, minimize `'use client'` |
+| **State Management** | Use Zustand over React Context for global state |
+| **Data Fetching** | Prefer Server Actions over API Routes |
 | **UI** | Tailwind CSS + shadcn/ui |
 | **Performance** | Optimize Web Vitals, WebP images, lazy loading |
 
