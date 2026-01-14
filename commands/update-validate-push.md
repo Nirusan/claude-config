@@ -1,19 +1,12 @@
-# Update, Validate & Push
+# Validate, Update & Push
 
-Sequential workflow to update documentation, validate the build, update progress, and push changes.
+Sequential workflow to validate the build, update documentation and progress, then push changes.
 
 ## Workflow
 
 Execute these steps **in order**, stopping if any step fails:
 
-### Step 1: Update Documentation
-Run `/update-docs` to intelligently update:
-- `CLAUDE.md` (if meaningful changes exist)
-- `memory-bank/` files (except `brainstorm.md`)
-
-If no updates are needed, continue to the next step.
-
-### Step 2: Validate
+### Step 1: Validate
 Run `/validate` to ensure:
 - Lint passes (`pnpm lint`)
 - Build passes (`pnpm build`)
@@ -25,6 +18,13 @@ Run `/validate` to ensure:
 3. Wait for user response before proceeding
 4. If user agrees, fix the issue and re-run validation
 5. If user declines, stop the workflow
+
+### Step 2: Update Documentation
+Run `/update-docs` to intelligently update:
+- `CLAUDE.md` (if meaningful changes exist)
+- `memory-bank/` files (except `brainstorm.md`)
+
+If no updates are needed, continue to the next step.
 
 ### Step 3: Update Progress (Conditional)
 
@@ -57,8 +57,8 @@ At any step, if something unexpected happens:
 After completion, summarize:
 ```
 ## Summary
-- Documentation: [Updated X files / No updates needed]
 - Validation: [Passed / Fixed N issues]
+- Documentation: [Updated X files / No updates needed]
 - Progress: [Updated / Skipped (no plan) / Skipped (unrelated work)]
 - Git: [Committed and pushed / Skipped]
 ```
