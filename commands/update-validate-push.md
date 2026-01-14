@@ -1,6 +1,6 @@
 # Update, Validate & Push
 
-Sequential workflow to update documentation, validate the build, and push changes.
+Sequential workflow to update documentation, validate the build, update progress, and push changes.
 
 ## Workflow
 
@@ -26,7 +26,20 @@ Run `/validate` to ensure:
 4. If user agrees, fix the issue and re-run validation
 5. If user declines, stop the workflow
 
-### Step 3: Git Add, Commit & Push
+### Step 3: Update Progress (Conditional)
+
+**First, check if this applies:**
+- Search for `*-implementation-plan.md` or `*-implementation-plan.txt` in the project
+- If NO implementation plan exists → Skip this step entirely
+
+**If implementation plan exists:**
+- Determine if the work done in this session relates to a task in the plan
+- If yes → Run `/update-progress` to update:
+  - The implementation plan file (check off completed tasks)
+  - `progress.txt` or `progress.md`
+- If the work was unrelated to the plan → Skip this step
+
+### Step 4: Git Add, Commit & Push
 Run `/git-add-commit-push` to:
 - Stage all changes
 - Create a commit with an appropriate message
@@ -46,5 +59,6 @@ After completion, summarize:
 ## Summary
 - Documentation: [Updated X files / No updates needed]
 - Validation: [Passed / Fixed N issues]
+- Progress: [Updated / Skipped (no plan) / Skipped (unrelated work)]
 - Git: [Committed and pushed / Skipped]
 ```
