@@ -1,6 +1,6 @@
 ---
 name: next-task
-description: Identify the next incomplete task from the MVP implementation plan. Use when the user asks "what's next", "next task", or wants to know what to work on next.
+description: Identify the next incomplete task from the MVP implementation plan. Use when the user asks "what's next", "next task", "c'est quoi la suite", or wants to know what to work on next.
 allowed-tools: Read, Glob
 user-invocable: true
 ---
