@@ -264,6 +264,7 @@ else
     echo "  - mgrep (semantic search)"
     echo "  - frontend-design"
     echo "  - code-review"
+    echo "  - code-simplifier"
     echo "  - typescript-lsp"
     echo "  - security-guidance"
     echo "  - context7"
