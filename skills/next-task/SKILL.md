@@ -1,37 +1,41 @@
 ---
+name: next-task
+description: Identify the next incomplete task from the MVP implementation plan. Use when the user asks "what's next", "next task", "c'est quoi la suite", or wants to know what to work on next.
 allowed-tools: Read, Glob
-description: Identify the next incomplete task from the MVP plan
+user-invocable: true
 ---
 
-## Identify Next Task
+# Identify Next Task
 
-### Step 1: Read MVP Plan
+## Step 1: Read MVP Plan
+
 Find and read the implementation plan file:
 - `memory-bank/mvp-implementation-plan.md`
 - or `docs/implementation-plan.md`
 - or any `*plan*.md` file in the project
 
-### Step 2: Read Progress
+## Step 2: Read Progress
+
 Find and read the progress tracking file:
 - `progress.txt`
 - or `PROGRESS.md`
 - or any progress tracking file
 
-### Step 3: Analyze
+## Step 3: Analyze
 
 Compare the plan with progress to identify:
 1. The **current phase** (e.g., Phase 3 - Opportunity Detection)
 2. **Completed tasks** in this phase
 3. The **next task** to work on
 
-### Step 4: Display Result
+## Step 4: Display Result
 
 Output format:
 ```
 ## MVP Progress
 
-📍 Current phase: [Phase name]
-✅ Completed: X/Y tasks
+Current phase: [Phase name]
+Completed: X/Y tasks
 
 ## Next Task
 

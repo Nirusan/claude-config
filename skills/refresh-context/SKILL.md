@@ -1,13 +1,15 @@
 ---
+name: refresh-context
+description: Re-read project documentation (CLAUDE.md, progress.txt, memory-bank/) to refresh context. Use when starting a new session, after a break, or when the user says "refresh", "reload context", "what's the current state", or "on en est où".
 allowed-tools: Read, Glob
-description: Re-read project documentation to refresh context
+user-invocable: true
 ---
 
-## Refresh Project Context
+# Refresh Project Context
 
 Re-read all key documentation files to understand the project.
 
-### Files to Read (in order)
+## Files to Read (in order)
 
 1. **CLAUDE.md** (project root)
    - Code conventions
@@ -27,14 +29,15 @@ Re-read all key documentation files to understand the project.
 4. **database/schema.sql** (if present)
    - Database structure
 
-### Files to Ignore
+## Files to Ignore
+
 - `brainstorm.md` - Research/ideation, not relevant for implementation
 - `node_modules/`
 - `.next/`
 
-### Summary
+## Summary Output
 
-After reading, display a concise summary:
+After reading, display:
 ```
 ## Context Loaded
 
@@ -49,5 +52,3 @@ After reading, display a concise summary:
 **Suggested next action:**
 [What seems to be the logical next step]
 ```
-
-This summary helps resume work after a break.

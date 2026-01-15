@@ -1,31 +1,30 @@
 ---
+name: implement
+description: Complete implementation workflow for a task - understand context, plan, implement, validate, review, and commit. Use when the user wants to implement a feature, fix a bug, or complete a specific development task.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, TodoWrite, Skill, mcp__supabase__list_tables, mcp__supabase__get_advisors, mcp__supabase__execute_sql, mcp__plugin_context7_context7__resolve-library-id, mcp__plugin_context7_context7__query-docs
-argument-hint: <task description to implement>
-description: Implement a specific task following the complete workflow
+user-invocable: true
 ---
 
-## Implement a Task
+# Implement a Task
 
-Task to implement: "$ARGUMENTS"
-
-### Phase 1: Understand
+## Phase 1: Understand
 
 1. Read `CLAUDE.md` for conventions
 2. Read `progress.txt` for current context
 3. Use **TodoWrite** to plan subtasks
 4. If task touches DB, read `database/schema.sql`
 
-### Phase 2: Implement
+## Phase 2: Implement
 
 1. Implement the requested task
-2. Strictly follow CLAUDE.md conventions:
+2. Follow CLAUDE.md conventions:
    - Functional/declarative, no classes
    - Minimize 'use client'
    - Naming: kebab-case (folders), PascalCase (components), camelCase (functions)
 3. Mark todos as completed as you go
 4. If you need library documentation, use Context7
 
-### Phase 2.5: Tests E2E (if relevant)
+## Phase 2.5: Tests E2E (if relevant)
 
 If the feature adds new user-facing functionality:
 1. Create/update E2E tests in `tests/e2e/`
@@ -37,7 +36,7 @@ If the feature adds new user-facing functionality:
 - Internal change with no UI impact
 - Existing tests already cover the case
 
-### Phase 3: Validate
+## Phase 3: Validate
 
 Run in order (stop on failure):
 ```bash
@@ -46,14 +45,14 @@ pnpm build
 pnpm test:e2e
 ```
 
-If DB changes → check Supabase advisors (security/RLS)
+If DB changes, check Supabase advisors (security/RLS)
 
-### Phase 4: Code Review
+## Phase 4: Code Review
 
-Invoke `/code-review` skill to analyze changes.
+Invoke `/security-check` skill to analyze changes.
 Fix any critical issues identified.
 
-### Phase 5: Finalize
+## Phase 5: Finalize
 
 1. Update `progress.txt` with what was done
 2. Commit with a descriptive message:
@@ -64,7 +63,7 @@ Fix any critical issues identified.
    Co-Authored-By: Claude <noreply@anthropic.com>"
    ```
 
-### Rules
+## Rules
 
 - ONE task per execution only
 - ALL validations must pass before commit
