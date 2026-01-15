@@ -2,6 +2,9 @@
 name: db-check
 description: Check Supabase database health, security advisors, and RLS policies. Use automatically after creating or modifying database migrations, RLS policies, or schema changes. Also use when working with Supabase tables or when security/performance issues are suspected.
 allowed-tools: mcp__supabase__list_projects, mcp__supabase__get_advisors, mcp__supabase__list_tables
+context: fork
+agent: general-purpose
+user-invocable: true
 ---
 
 ## Supabase Database Health Check

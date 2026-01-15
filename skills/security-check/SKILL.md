@@ -1,6 +1,9 @@
 ---
 name: security-check
 description: Red-team security audit for code changes. Use automatically when working on authentication, authorization, user inputs, API endpoints, database queries, or any security-sensitive code. Also use before commits that touch sensitive areas.
+context: fork
+agent: general-purpose
+user-invocable: true
 ---
 
 ## Security Check - Red Team Audit
