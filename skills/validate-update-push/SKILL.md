@@ -11,10 +11,12 @@ Sequential workflow to validate, document, and push changes.
 
 ## Step 1: Validate
 
-Run `/validate` to ensure:
-- Lint passes (`pnpm lint`)
-- Build passes (`pnpm build`)
-- E2E tests pass (`pnpm test:e2e`)
+Run `/validate` to check available validations:
+- Lint (if configured)
+- Build (if configured)
+- Tests (if configured)
+
+The validate skill automatically detects which scripts are available in `package.json` and skips those that aren't configured.
 
 **If validation fails:**
 1. Report the error clearly
