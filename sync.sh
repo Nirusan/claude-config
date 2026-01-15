@@ -46,12 +46,21 @@ if [[ -d "$CLAUDE_DIR/agents" ]]; then
     done
 fi
 
-# Sync skills
-if [[ -d "$CLAUDE_DIR/skills/design-principles" ]]; then
-    if [[ -f "$CLAUDE_DIR/skills/design-principles/skill.md" ]]; then
-        cp "$CLAUDE_DIR/skills/design-principles/skill.md" "$SCRIPT_DIR/skills/design-principles/skill.md"
-        echo "    ✓ skills/design-principles/skill.md"
-    fi
+# Sync skills (all subdirectories)
+if [[ -d "$CLAUDE_DIR/skills" ]]; then
+    for skill_dir in "$CLAUDE_DIR/skills"/*/; do
+        if [[ -d "$skill_dir" ]]; then
+            skill_name=$(basename "$skill_dir")
+            mkdir -p "$SCRIPT_DIR/skills/$skill_name"
+            # Copy SKILL.md or skill.md
+            for skill_file in "SKILL.md" "skill.md"; do
+                if [[ -f "$skill_dir/$skill_file" ]]; then
+                    cp "$skill_dir/$skill_file" "$SCRIPT_DIR/skills/$skill_name/$skill_file"
+                    echo "    ✓ skills/$skill_name/$skill_file"
+                fi
+            done
+        fi
+    done
 fi
 
 echo ""
