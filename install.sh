@@ -185,6 +185,7 @@ SKILLS=(
     "update-docs"
     "update-progress"
     "validate"
+    "validate-quick"
     "validate-update-push"
 )
 for skill in "${SKILLS[@]}"; do
@@ -269,7 +270,7 @@ else
 fi
 echo ""
 echo "Also installed:"
-echo "  - 12 skills (/validate, /implement, /security-check, etc.)"
+echo "  - 13 skills (/validate, /implement, /security-check, etc.)"
 echo "  - 4 custom agents"
 echo ""
 echo "Skills are the unified format replacing commands (Claude Code Dec 2025)."
