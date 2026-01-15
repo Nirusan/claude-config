@@ -21,20 +21,6 @@ if [[ -f "$CLAUDE_DIR/settings.json" ]]; then
     echo "    ✓ config/settings.json"
 fi
 
-# Sync commands
-if [[ -d "$CLAUDE_DIR/commands" ]]; then
-    for file in "$CLAUDE_DIR/commands"/*.md; do
-        if [[ -f "$file" ]]; then
-            filename=$(basename "$file")
-            # Skip sync-config (local only)
-            if [[ "$filename" != "sync-config.md" ]]; then
-                cp "$file" "$SCRIPT_DIR/commands/$filename"
-                echo "    ✓ commands/$filename"
-            fi
-        fi
-    done
-fi
-
 # Sync agents
 if [[ -d "$CLAUDE_DIR/agents" ]]; then
     for file in "$CLAUDE_DIR/agents"/*.md; do
@@ -52,13 +38,24 @@ if [[ -d "$CLAUDE_DIR/skills" ]]; then
         if [[ -d "$skill_dir" ]]; then
             skill_name=$(basename "$skill_dir")
             mkdir -p "$SCRIPT_DIR/skills/$skill_name"
-            # Copy SKILL.md or skill.md
-            for skill_file in "SKILL.md" "skill.md"; do
-                if [[ -f "$skill_dir/$skill_file" ]]; then
-                    cp "$skill_dir/$skill_file" "$SCRIPT_DIR/skills/$skill_name/$skill_file"
-                    echo "    ✓ skills/$skill_name/$skill_file"
+            # Copy SKILL.md (canonical name)
+            if [[ -f "$skill_dir/SKILL.md" ]]; then
+                cp "$skill_dir/SKILL.md" "$SCRIPT_DIR/skills/$skill_name/SKILL.md"
+                echo "    ✓ skills/$skill_name/SKILL.md"
+            fi
+            # Copy any additional files (reference.md, examples.md, etc.)
+            for extra_file in "$skill_dir"*; do
+                if [[ -f "$extra_file" && "$(basename "$extra_file")" != "SKILL.md" ]]; then
+                    cp "$extra_file" "$SCRIPT_DIR/skills/$skill_name/"
+                    echo "    ✓ skills/$skill_name/$(basename "$extra_file")"
                 fi
             done
+            # Copy scripts directory if present
+            if [[ -d "$skill_dir/scripts" ]]; then
+                mkdir -p "$SCRIPT_DIR/skills/$skill_name/scripts"
+                cp -r "$skill_dir/scripts/"* "$SCRIPT_DIR/skills/$skill_name/scripts/" 2>/dev/null || true
+                echo "    ✓ skills/$skill_name/scripts/"
+            fi
         fi
     done
 fi

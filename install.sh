@@ -91,7 +91,7 @@ if [[ -d "$CLAUDE_DIR" && "$(ls -A "$CLAUDE_DIR" 2>/dev/null)" ]]; then
 fi
 
 # Create directories
-mkdir -p "$CLAUDE_DIR"/{commands,agents,skills/design-principles}
+mkdir -p "$CLAUDE_DIR"/{agents,skills}
 if [[ "$INSTALL_MODE" == "user" ]]; then
     mkdir -p "$CLAUDE_DIR/plugins/marketplaces"
 fi
@@ -119,6 +119,13 @@ install_file() {
     else
         curl -sSL "$REPO_URL/$src" -o "$dest"
     fi
+}
+
+# Function to install a skill directory
+install_skill() {
+    local skill_name="$1"
+    mkdir -p "$CLAUDE_DIR/skills/$skill_name"
+    install_file "skills/$skill_name/SKILL.md" "$CLAUDE_DIR/skills/$skill_name/SKILL.md"
 }
 
 # Function to merge settings from existing settings.json
@@ -164,10 +171,24 @@ else
     merge_settings "$CLAUDE_DIR/settings.json"
 fi
 
-# Install commands
-echo "==> Installing commands..."
-for cmd in validate implement db-check git-add-commit-push next-task refresh-context update-progress; do
-    install_file "commands/$cmd.md" "$CLAUDE_DIR/commands/$cmd.md"
+# Install skills (unified format - replaces commands)
+echo "==> Installing skills..."
+SKILLS=(
+    "db-check"
+    "design-principles"
+    "git-add-commit-push"
+    "implement"
+    "next-task"
+    "permissions-allow"
+    "refresh-context"
+    "security-check"
+    "update-docs"
+    "update-progress"
+    "validate"
+    "validate-update-push"
+)
+for skill in "${SKILLS[@]}"; do
+    install_skill "$skill"
 done
 
 # Install agents
@@ -175,10 +196,6 @@ echo "==> Installing agents..."
 for agent in code-reviewer nextjs-developer prompt-engineer supabase-developer; do
     install_file "agents/$agent.md" "$CLAUDE_DIR/agents/$agent.md"
 done
-
-# Install skills
-echo "==> Installing skills..."
-install_file "skills/design-principles/skill.md" "$CLAUDE_DIR/skills/design-principles/skill.md"
 
 # Install plugins (user-level only)
 if [[ "$INSTALL_MODE" == "user" ]]; then
@@ -252,9 +269,11 @@ else
 fi
 echo ""
 echo "Also installed:"
-echo "  - 7 custom commands (/validate, /implement, etc.)"
+echo "  - 12 skills (/validate, /implement, /security-check, etc.)"
 echo "  - 4 custom agents"
-echo "  - 1 skill (design-principles)"
+echo ""
+echo "Skills are the unified format replacing commands (Claude Code Dec 2025)."
+echo "Invoke manually with /skill-name or let Claude auto-discover them."
 echo ""
 echo "Optional: Configure MCP servers (brave-search, firecrawl, supabase)"
 echo "  See: config/mcp-servers.template.json"
