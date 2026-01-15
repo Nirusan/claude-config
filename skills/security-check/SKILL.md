@@ -1,6 +1,6 @@
 ---
 name: security-check
-description: Red-team security audit. Use AUTOMATICALLY after writing auth code, API endpoints, form handling, user inputs, or database queries. Also when user asks "is it secure?", "any vulnerabilities?", "security check", or before committing sensitive code (auth, payments, admin).
+description: Red-team security audit. Use AUTOMATICALLY after writing auth code, API endpoints, form handling, user inputs, or database queries. Also when user asks "is it secure?", "any vulnerabilities?", "security check", "c'est sécurisé?", "des failles?", "audit sécu", or before committing sensitive code (auth, payments, admin).
 context: fork
 agent: general-purpose
 user-invocable: true

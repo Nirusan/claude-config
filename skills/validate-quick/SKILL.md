@@ -1,6 +1,6 @@
 ---
 name: validate-quick
-description: Quick validation check returning pass/fail. Use AUTOMATICALLY before any git commit, before pushing code, when user asks "is it ready?", "can we commit?", "does it build?", or wants a quick health check. Runs silently in background.
+description: Quick validation check returning pass/fail. Use AUTOMATICALLY before any git commit, before pushing code, when user asks "is it ready?", "can we commit?", "does it build?", "c'est prêt?", "on peut commit?", "ça build?", or wants a quick health check. Runs silently in background.
 allowed-tools: Bash(pnpm:*), Read
 context: fork
 agent: general-purpose

@@ -1,6 +1,6 @@
 ---
 name: db-check
-description: Check Supabase database health, RLS policies, and performance. Use AUTOMATICALLY after writing SQL, creating tables, modifying migrations, or changing RLS policies. Also when user asks "is my database secure?", "check RLS", "any missing indexes?", or after any schema.sql changes.
+description: Check Supabase database health, RLS policies, and performance. Use AUTOMATICALLY after writing SQL, creating tables, modifying migrations, or changing RLS policies. Also when user asks "is my database secure?", "check RLS", "any missing indexes?", "ma base est sécurisée?", "vérifie les RLS", "il manque des index?", or after any schema.sql changes.
 allowed-tools: mcp__supabase__list_projects, mcp__supabase__get_advisors, mcp__supabase__list_tables
 context: fork
 agent: general-purpose
