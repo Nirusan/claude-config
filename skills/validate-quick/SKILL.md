@@ -1,6 +1,6 @@
 ---
 name: validate-quick
-description: Quick validation check that returns pass/fail status. Use for fast CI-style checks without detailed output. Good for pre-commit verification or quick health checks.
+description: Quick validation check returning pass/fail. Use AUTOMATICALLY before any git commit, before pushing code, when user asks "is it ready?", "can we commit?", "does it build?", or wants a quick health check. Runs silently in background.
 allowed-tools: Bash(pnpm:*), Read
 context: fork
 agent: general-purpose
