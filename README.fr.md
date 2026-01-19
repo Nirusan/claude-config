@@ -370,6 +370,7 @@ Scripts pour exécuter Claude Code de façon autonome.
 |--------|---------|
 | `scripts/ralph.sh <n>` | Exécute N itérations autonomes (boucle) |
 | `scripts/ralph-once.sh` | Exécute 1 tâche autonome puis s'arrête |
+| `scripts/worktree.sh` | Gère les git worktrees pour sessions Claude parallèles |
 
 **Ce qu'ils font :**
 1. Switch sur la branche `ralph`
@@ -379,6 +380,44 @@ Scripts pour exécuter Claude Code de façon autonome.
 **Prérequis :**
 - Dossier `memory-bank/` avec les docs projet (bientôt dans ce repo)
 - `progress.txt` pour tracker le travail fait
+
+### Sessions parallèles avec Git Worktrees
+
+Les git worktrees permettent d'avoir plusieurs répertoires de travail pour le même repo, chacun sur une branche différente. Parfait pour lancer plusieurs sessions Claude en parallèle.
+
+**Pourquoi worktrees plutôt que stash ?**
+| Stash | Worktree |
+|-------|----------|
+| Un contexte à la fois | Plusieurs contextes simultanément |
+| Doit stash/unstash | Pas de changement de contexte |
+| Ne peut pas lancer de tests en parallèle | Tests en parallèle |
+
+**Démarrage rapide :**
+```bash
+# Créer des worktrees pour le travail parallèle
+./scripts/worktree.sh create feature/auth
+./scripts/worktree.sh create feature/api
+
+# Ouvrir des terminaux et lancer Claude dans chacun
+cd ../mon-projet-worktrees/feature-auth && claude
+cd ../mon-projet-worktrees/feature-api && claude
+
+# Lister tous les worktrees
+./scripts/worktree.sh list
+
+# Supprimer quand terminé
+./scripts/worktree.sh delete feature/auth
+```
+
+**Structure des répertoires :**
+```
+mon-projet/                     <- Repo principal (branche main)
+mon-projet-worktrees/           <- Créé automatiquement
+├── feature-auth/               <- Worktree (branche feature/auth)
+└── feature-api/                <- Worktree (branche feature/api)
+```
+
+Utilise le skill `/worktree` pour des instructions détaillées.
 
 ---
 
@@ -393,7 +432,8 @@ claude-config/
 ├── .gitignore
 ├── scripts/
 │   ├── ralph.sh            # Boucle autonome (N itérations)
-│   └── ralph-once.sh       # Tâche autonome unique
+│   ├── ralph-once.sh       # Tâche autonome unique
+│   └── worktree.sh         # Gestionnaire de worktrees
 ├── config/
 │   ├── CLAUDE.md           # Conventions de code
 │   ├── settings.json       # Model, plugins, langue
@@ -412,8 +452,10 @@ claude-config/
 │   ├── supabase-developer.md # Expert base de données
 │   └── prompt-engineer.md  # Optimisation de prompts
 └── skills/
-    └── design-principles/
-        └── skill.md        # Guide design system
+    ├── design-principles/
+    │   └── skill.md        # Guide design system
+    └── worktree/
+        └── SKILL.md        # Guide git worktree
 ```
 
 ---

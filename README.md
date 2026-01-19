@@ -370,6 +370,7 @@ Scripts for running Claude Code autonomously.
 |--------|---------|
 | `scripts/ralph.sh <n>` | Run N autonomous iterations (loop) |
 | `scripts/ralph-once.sh` | Run 1 autonomous task then stop |
+| `scripts/worktree.sh` | Manage git worktrees for parallel Claude sessions |
 
 **What they do:**
 1. Switch to `ralph` branch
@@ -379,6 +380,44 @@ Scripts for running Claude Code autonomously.
 **Requirements:**
 - `memory-bank/` folder with project docs (coming soon to this repo)
 - `progress.txt` to track completed work
+
+### Parallel Sessions with Git Worktrees
+
+Git worktrees let you have multiple working directories for the same repo, each on a different branch. Perfect for running multiple Claude sessions in parallel.
+
+**Why worktrees over stash?**
+| Stash | Worktree |
+|-------|----------|
+| One context at a time | Multiple contexts simultaneously |
+| Must stash/unstash | No context switching |
+| Can't run parallel tests | Run tests in parallel |
+
+**Quick start:**
+```bash
+# Create worktrees for parallel work
+./scripts/worktree.sh create feature/auth
+./scripts/worktree.sh create feature/api
+
+# Open terminals and start Claude in each
+cd ../my-project-worktrees/feature-auth && claude
+cd ../my-project-worktrees/feature-api && claude
+
+# List all worktrees
+./scripts/worktree.sh list
+
+# Delete when done
+./scripts/worktree.sh delete feature/auth
+```
+
+**Directory structure:**
+```
+my-project/                     <- Main repo (main branch)
+my-project-worktrees/           <- Auto-created
+├── feature-auth/               <- Worktree (feature/auth branch)
+└── feature-api/                <- Worktree (feature/api branch)
+```
+
+Use `/worktree` skill for detailed instructions.
 
 ---
 
@@ -393,7 +432,8 @@ claude-config/
 ├── .gitignore
 ├── scripts/
 │   ├── ralph.sh            # Autonomous loop (N iterations)
-│   └── ralph-once.sh       # Autonomous single task
+│   ├── ralph-once.sh       # Autonomous single task
+│   └── worktree.sh         # Git worktree manager
 ├── config/
 │   ├── CLAUDE.md           # Code conventions
 │   ├── settings.json       # Model, plugins, language
@@ -412,8 +452,10 @@ claude-config/
 │   ├── supabase-developer.md # Database expert
 │   └── prompt-engineer.md  # Prompt optimization
 └── skills/
-    └── design-principles/
-        └── skill.md        # Design system guide
+    ├── design-principles/
+    │   └── skill.md        # Design system guide
+    └── worktree/
+        └── SKILL.md        # Git worktree guide
 ```
 
 ---

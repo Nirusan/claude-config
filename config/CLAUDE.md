@@ -75,3 +75,29 @@ When creating new commands, agents, or instructions, always write them in Englis
 - Automatically use **Context7 MCP** for library/API documentation, code generation, and configuration
 - Use **frontend-design** skill to create distinctive, production-ready UI components (avoid generic AI aesthetics)
 - For reading URLs: **WebFetch** by default (free, sufficient for docs/articles), **Firecrawl** only for JS-heavy pages or advanced extraction
+
+## Parallel Development with Git Worktrees
+
+For working on multiple features/branches in parallel, use **git worktrees** instead of stash:
+
+```bash
+# Create a worktree for a new feature
+./scripts/worktree.sh create feature/my-feature
+
+# This creates: ../project-worktrees/feature-my-feature/
+# Open a new terminal, cd into it, and run claude
+```
+
+**Benefits:**
+- Run multiple Claude sessions simultaneously (one per worktree)
+- No context switching or stashing needed
+- Each worktree has its own working directory
+- Perfect for parallel autonomous execution with `ralph.sh`
+
+**Workflow:**
+1. Create worktrees: `./scripts/worktree.sh create <branch>`
+2. Open terminal per worktree
+3. Run `claude` in each
+4. Merge when done, delete worktrees
+
+Use `/worktree` skill for detailed instructions.
