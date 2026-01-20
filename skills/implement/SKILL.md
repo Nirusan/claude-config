@@ -30,6 +30,11 @@ args:
      prd_file = memory-bank/prd.md
    ```
 
+3. **Fallback search** (if main project files not found):
+   - Plan: `**/*-implementation-plan.md`, `**/implementation-plan.md`, `**/*plan*.md`
+   - Progress: `progress.txt`, `progress.md`, `PROGRESS.md`
+   - PRD: `**/PRD.md`, `**/prd.md`
+
 ## Phase 1: Understand
 
 1. Read `CLAUDE.md` for conventions
