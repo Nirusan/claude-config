@@ -2,7 +2,7 @@
 name: product-manager
 description: Product requirements and planning specialist. Use for creating PRDs, defining features, prioritizing requirements, and scoping work.
 tools: Read, Write, Grep, Glob
-model: sonnet
+model: inherit
 ---
 
 # Product Manager Agent

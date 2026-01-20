@@ -2,7 +2,7 @@
 name: analyst
 description: Brainstorming and exploration specialist. Use for ideation, problem discovery, market analysis, and creating product briefs.
 tools: Read, Write, WebSearch, WebFetch, Grep, Glob
-model: sonnet
+model: inherit
 ---
 
 # Analyst Agent

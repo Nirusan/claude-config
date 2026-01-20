@@ -4,9 +4,13 @@ description: Explore and validate product ideas through structured brainstorming
 triggers:
   - "/brainstorm"
   - "brainstorm"
+  - "brainstormer"
   - "let's brainstorm"
+  - "réfléchissons"
   - "explore this idea"
+  - "explorer cette idée"
   - "help me think through"
+  - "aide-moi à réfléchir"
 tools: Read, Write, WebSearch, WebFetch, Grep, Glob, Task
 context: fork
 ---

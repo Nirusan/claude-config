@@ -4,8 +4,11 @@ description: Create a Product Requirements Document. Interactive session to defi
 triggers:
   - "/prd"
   - "create prd"
+  - "créer un prd"
   - "define requirements"
+  - "définir les besoins"
   - "write the prd"
+  - "rédiger le prd"
 tools: Read, Write, Grep, Glob, Task
 context: fork
 args:

@@ -5,8 +5,11 @@ triggers:
   - "/implementation-plan"
   - "/plan"
   - "create implementation plan"
+  - "créer le plan"
   - "create the plan"
+  - "plan d'implémentation"
   - "break down into stories"
+  - "découper en stories"
 tools: Read, Write, Grep, Glob, Task
 context: fork
 args:
