@@ -224,14 +224,18 @@ fi
 # Install skills (unified format - replaces commands)
 echo "==> Installing skills..."
 SKILLS=(
+    "brainstorm"
     "db-check"
     "design-principles"
     "git-add-commit-push"
     "implement"
+    "implementation-plan"
     "next-task"
     "permissions-allow"
+    "prd"
     "refresh-context"
     "security-check"
+    "tech-stack"
     "update-docs"
     "update-progress"
     "validate"
@@ -244,7 +248,7 @@ done
 
 # Install agents
 echo "==> Installing agents..."
-for agent in code-reviewer nextjs-developer prompt-engineer supabase-developer; do
+for agent in analyst architect code-reviewer nextjs-developer product-manager prompt-engineer supabase-developer; do
     install_file "agents/$agent.md" "$CLAUDE_DIR/agents/$agent.md"
 done
 
@@ -321,8 +325,8 @@ else
 fi
 echo ""
 echo "Also installed:"
-echo "  - 13 skills (/validate, /implement, /security-check, etc.)"
-echo "  - 4 custom agents"
+echo "  - 17 skills (/validate, /implement, /prd, /brainstorm, etc.)"
+echo "  - 7 custom agents (analyst, architect, product-manager, ...)"
 echo "  - MCP servers template (merged into ~/.claude.json)"
 echo ""
 echo "Skills are the unified format replacing commands (Claude Code Dec 2025)."
