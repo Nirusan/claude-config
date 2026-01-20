@@ -6,16 +6,32 @@ git checkout ralph
 
 claude -p "
 ## Context Files (READ THESE FIRST)
-@CLAUDE.md @memory-bank/mvp-implementation-plan.md @memory-bank/PRD.md @memory-bank/tech-stack.md @memory-bank/design-system.md @progress.txt
+@CLAUDE.md
+
+## Find Implementation Plan (in priority order)
+Look for the implementation plan in this order:
+1. memory-bank/plan.md
+2. memory-bank/*-implementation-plan.md or memory-bank/implementation-plan.md
+3. *-implementation-plan.md or implementation-plan.md (project root)
+4. docs/*-implementation-plan.md
+
+## Find Progress File (in priority order)
+1. memory-bank/progress.md or memory-bank/progress.txt
+2. progress.md or progress.txt (project root)
+
+## Also read if present
+- memory-bank/prd.md or memory-bank/PRD.md
+- memory-bank/tech-stack.md
+- memory-bank/design-system.md
 
 ## Mode
 AUTONOMOUS EXECUTION - No questions, no human validation, execute everything in ONE session.
 
 ## Your Mission
-Complete ONE task from the MVP plan, from start to finish, in this single execution.
+Complete ONE task from the implementation plan, from start to finish, in this single execution.
 
 ## Step 1: Identify Next Task
-Read \`memory-bank/mvp-implementation-plan.md\` and \`progress.txt\` to find the next incomplete task.
+Read the implementation plan and progress file to find the next incomplete task.
 Display what you found in this format:
 \`\`\`
 ## Next Task: [Task name]
@@ -31,12 +47,14 @@ Description: [Brief description]
    - Minimize 'use client' - prefer Server Components
    - Naming: kebab-case (folders), PascalCase (components), camelCase (functions)
    - Use @/ absolute imports
+   - No barrel imports (import directly from source)
+   - Promise.all for parallel fetches
 4. If you need library docs, use Context7 MCP
 5. Mark todos as completed as you progress
 
 ## Step 3: Write E2E Tests (if applicable)
 If the feature adds user-facing functionality:
-- Create/update tests in \`tests/e2e/\`
+- Create/update tests in \`tests/e2e/\` or \`tests/\`
 - Use data-testid attributes
 - Follow existing patterns
 
@@ -47,14 +65,15 @@ Run these commands in sequence. FIX any errors before proceeding:
 \`\`\`bash
 pnpm lint      # Fix lint errors
 pnpm build     # Fix type errors
-pnpm test:e2e  # Fix failing tests
+pnpm test:e2e  # Fix failing tests (if exists)
 \`\`\`
 
 If validation fails, fix the issues and re-run until ALL pass.
 
 ## Step 5: Update Progress
-Update \`progress.txt\` with:
+Update the progress file (progress.md or progress.txt) with:
 - Date and what was completed
+- Move task from 'Remaining' to 'Completed'
 - Any notes about the implementation
 
 ## Step 6: Commit and Push
