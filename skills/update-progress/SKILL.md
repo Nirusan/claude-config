@@ -39,7 +39,8 @@ Search for the plan and progress files at the determined paths.
 
 Fallback search if not found:
 - `**/*-implementation-plan.md`
-- `**/*-implementation-plan.txt`
+- `**/implementation-plan.md`
+- `**/*plan*.md`
 - `progress.txt`, `progress.md`, `PROGRESS.md`
 
 If no implementation plan exists, skip plan updates and only update progress.

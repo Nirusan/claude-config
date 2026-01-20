@@ -36,9 +36,9 @@ args:
 Find and read the implementation plan file at `{plan_file}`.
 
 Fallback search if not found:
-- `memory-bank/mvp-implementation-plan.md`
-- `docs/implementation-plan.md`
-- Any `*plan*.md` file in the project
+- `**/*-implementation-plan.md`
+- `**/implementation-plan.md`
+- `**/*plan*.md`
 
 ## Step 2: Read Progress
 
@@ -46,6 +46,7 @@ Find and read the progress tracking file at `{progress_file}`.
 
 Fallback search:
 - `progress.txt`
+- `progress.md`
 - `PROGRESS.md`
 
 ## Step 3: Analyze
