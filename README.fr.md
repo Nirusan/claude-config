@@ -124,6 +124,9 @@ Définit les standards de code appliqués à tous les projets :
 | **Data Fetching** | Préférer Server Actions aux API Routes |
 | **UI** | Tailwind CSS + shadcn/ui |
 | **Performance** | Optimiser Web Vitals, images WebP, lazy loading |
+| **No Barrel Imports** | Importer directement (`lucide-react/icons/Check`) pas depuis l'index |
+| **No Waterfalls** | `Promise.all()` pour les fetches parallèles, jamais `await` séquentiels |
+| **Déduplication** | `React.cache()` pour les fonctions appelées plusieurs fois dans un render |
 
 #### `config/settings.json` - Paramètres Claude
 
@@ -141,23 +144,31 @@ Définit les standards de code appliqués à tous les projets :
 | `model` | `opus` | Utilise Claude Opus (le plus capable) |
 | `language` | `French` | Claude répond en français |
 | `permissions` | commandes pnpm | Auto-approve pnpm dev/build/test/etc. |
-| `enabledPlugins` | 6 plugins | Plugins activés par défaut |
+| `enabledPlugins` | 7 plugins | Plugins activés par défaut |
 
 ---
 
-### Commandes personnalisées
+### Skills
 
-Les commandes s'invoquent avec `/nom-commande` dans Claude Code.
+Les skills sont le format unifié de Claude Code (Dec 2025), remplaçant l'ancien système de commandes. Ils peuvent être invoqués manuellement avec `/nom-skill` ou auto-découverts par Claude selon le contexte.
 
-| Commande | Quand l'utiliser | Ce qu'elle fait |
-|----------|------------------|-----------------|
-| `/validate` | Avant de commit | Exécute `pnpm lint` → `pnpm build` → `pnpm test:e2e` en séquence. S'arrête au premier échec. |
-| `/implement <tâche>` | Démarrer une nouvelle tâche | Workflow complet : lire docs → planifier avec todos → implémenter → valider → code review → commit |
-| `/db-check` | Après modifs DB | Vérifie les advisors Supabase pour problèmes de sécurité (RLS manquant) et performance |
-| `/git-add-commit-push` | Prêt à commit | Stage tout, génère le message de commit depuis le diff, push sur la branche actuelle |
-| `/next-task` | Entre deux tâches | Lit le plan MVP et le fichier progress, identifie la prochaine tâche à faire |
-| `/refresh-context` | Début de session | Relit CLAUDE.md, progress.txt, schema.sql pour comprendre l'état du projet |
-| `/update-progress` | Après avoir terminé | Ajoute une entrée dans progress.txt avec date, fichiers modifiés, ce qui a été fait |
+| Skill | Déclencheur | Ce qu'il fait |
+|-------|-------------|---------------|
+| `/validate` | Avant de commit | Exécute `pnpm lint` → `pnpm build` → `pnpm test:e2e` en séquence |
+| `/validate-quick` | Check CI rapide | Exécute seulement `pnpm lint` et `pnpm build` (saute les tests E2E) |
+| `/implement <tâche>` | Nouvelle tâche | Workflow complet : lire docs → planifier → implémenter → valider → review → commit |
+| `/db-check` | Après modifs DB | Vérifie les advisors Supabase pour sécurité et performance |
+| `/security-check` | Avant de commit | Audit sécurité red-team des changements récents |
+| `/git-add-commit-push` | Prêt à commit | Stage tout, génère le message de commit, push |
+| `/next-task` | Entre deux tâches | Lit le plan MVP, identifie la prochaine tâche |
+| `/refresh-context` | Début de session | Relit les docs projet (CLAUDE.md, progress.txt) |
+| `/update-progress` | Après travail | Ajoute une entrée dans progress.txt avec date et changements |
+| `/update-docs` | Après changements majeurs | Met à jour la documentation du projet |
+| `/validate-update-push` | Fin de session | Valide, met à jour le progress, commit et push |
+| `/permissions-allow` | Setup | Applique les permissions de développement standard |
+| `/design-principles` | Travail UI | Applique un design system minimal (style Linear/Notion/Stripe) |
+
+**Auto-découverte :** Les skills comme `db-check` et `security-check` sont déclenchés automatiquement quand c'est pertinent (ex: après des migrations DB ou avant des commits avec des changements sensibles).
 
 **Exemple :**
 ```
@@ -194,24 +205,6 @@ Les agents sont des assistants spécialisés que Claude spawn pour des tâches s
 
 ---
 
-### Skills
-
-Les skills sont des guides détaillés que Claude suit pour des domaines spécifiques. Ils s'activent automatiquement quand c'est pertinent.
-
-| Skill | Objectif |
-|-------|----------|
-| `design-principles` | Applique un design system précis et minimal inspiré de Linear, Notion et Stripe |
-
-**`design-principles` inclut :**
-- Système de grille 4px pour les espacements
-- Hiérarchie typographique (échelle 11px-32px)
-- Patterns d'ombres/élévation
-- Règles d'utilisation des couleurs (gris pour la structure, couleur pour le sens)
-- Anti-patterns à éviter (pas d'animations bouncy, pas de dégradés décoratifs)
-- Considérations dark mode
-
----
-
 ### Plugins (niveau utilisateur uniquement)
 
 Les plugins étendent Claude Code avec des capacités supplémentaires.
@@ -221,44 +214,35 @@ Les plugins étendent Claude Code avec des capacités supplémentaires.
 | `mgrep` | Recherche sémantique dans le code via embeddings (meilleur que grep pour les concepts) |
 | `frontend-design` | Génère des composants UI distinctifs et production-ready |
 | `code-review` | Code review automatisée avec checks sécurité et qualité |
+| `code-simplifier` | Simplifie et raffine le code pour plus de clarté et maintenabilité |
 | `typescript-lsp` | Intégration du language server TypeScript |
 | `security-guidance` | Bonnes pratiques de sécurité et détection de vulnérabilités |
 | `context7` | Récupère la documentation à jour des librairies |
 
 ---
 
-### Serveurs MCP (Optionnel)
+### Serveurs MCP
 
-Les serveurs MCP (Model Context Protocol) étendent Claude Code avec des intégrations de services externes. Contrairement aux plugins, les serveurs MCP nécessitent des clés API séparées et sont configurés dans `~/.claude.json`.
+Les serveurs MCP (Model Context Protocol) étendent Claude Code avec des intégrations de services externes. Ils sont **automatiquement fusionnés** dans `~/.claude.json` lors de l'installation (les serveurs existants sont préservés).
 
-**Template inclus :** `config/mcp-servers.template.json`
-
-| Serveur | Utilité | Type d'auth |
-|---------|---------|-------------|
-| `brave-search` | Recherche web | Clé API (obtenir sur [brave.com/search/api](https://brave.com/search/api)) |
-| `firecrawl` | Scraping web avancé | Clé API (obtenir sur [firecrawl.dev](https://firecrawl.dev)) |
+| Serveur | Utilité | Auth |
+|---------|---------|------|
+| `brave-search` | Recherche web | Clé API ([brave.com/search/api](https://brave.com/search/api)) |
+| `firecrawl` | Scraping web avancé | Clé API ([firecrawl.dev](https://firecrawl.dev)) |
 | `supabase` | Gestion de base de données | OAuth (pas de clé nécessaire) |
+| `exa` | Recherche web IA | OAuth (pas de clé nécessaire) |
+| `context7` | Documentation des librairies | Aucune (gratuit) |
+| `chrome-devtools` | Automatisation navigateur | Aucune (local) |
+| `gemini-design-mcp` | Design avec Gemini | Clé API |
+| `n8n-mcp` | Automatisation de workflows | Clé API + URL |
 
-**Configuration :**
+**Après installation :**
 
-1. Copier le template vers ta config Claude :
+Éditer `~/.claude.json` pour ajouter vos clés API :
 ```bash
-# Première fois - créer le fichier
-cp config/mcp-servers.template.json ~/.claude.json
-
-# Ou fusionner avec config existante
-cat config/mcp-servers.template.json
-# Puis ajouter manuellement la section mcpServers à ~/.claude.json
+# Remplacer les placeholders YOUR_API_KEY_HERE avec les vraies clés
+nano ~/.claude.json
 ```
-
-2. Remplacer les placeholders de clés API :
-```bash
-# Éditer ~/.claude.json et remplacer :
-# - YOUR_BRAVE_API_KEY_HERE
-# - YOUR_FIRECRAWL_API_KEY_HERE
-```
-
-3. Redémarrer Claude Code
 
 **Note :** Le fichier `~/.claude.json` contient des clés API et ne doit **jamais** être commité dans le contrôle de version.
 
@@ -287,25 +271,25 @@ git add -A && git commit -m "sync" && git push
 **Ce qui est synchronisé :**
 - `~/.claude/CLAUDE.md` → `config/CLAUDE.md`
 - `~/.claude/settings.json` → `config/settings.json`
-- `~/.claude/commands/*.md` → `commands/`
 - `~/.claude/agents/*.md` → `agents/`
-- `~/.claude/skills/` → `skills/`
+- `~/.claude/skills/*/SKILL.md` → `skills/`
+- Template serveurs MCP depuis `~/.claude.json`
 
-### Optionnel : commande /sync-config
+### Optionnel : skill /sync-config
 
-Crée une commande locale pour synchroniser rapidement (gitignorée, chemins spécifiques à l'utilisateur) :
+Un skill `/sync-config` est inclus mais gitgnoré (chemins spécifiques à l'utilisateur). Crée le tien :
 
 ```bash
-cat > ~/.claude/commands/sync-config.md << 'EOF'
+mkdir -p ~/.claude/skills/sync-config
+cat > ~/.claude/skills/sync-config/SKILL.md << 'EOF'
 ---
-allowed-tools: Bash(*)
+name: sync-config
 description: Sync local Claude config to GitHub repo
+triggers: ["/sync-config"]
+tools: Bash
 ---
 
-Lancer sync et afficher le status :
-```bash
-cd ~/chemin/vers/claude-config && ./sync.sh && git status
-```
+Exécuter : `cd ~/Sites/claudeCode && ./sync.sh && git status`
 EOF
 ```
 
@@ -313,22 +297,27 @@ EOF
 
 ## Personnalisation
 
-### Ajouter une nouvelle commande
+### Ajouter un nouveau skill
 
-1. Créer `commands/ma-commande.md` :
+1. Créer `skills/mon-skill/SKILL.md` :
 ```markdown
 ---
-allowed-tools: Bash(*), Read, Write
-description: Ce que fait cette commande
+name: mon-skill
+description: Ce que fait ce skill
+triggers:
+  - "/mon-skill"
+  - "lancer mon skill"
+tools: Bash, Read, Write
+context: fork
 ---
 
 ## Instructions pour Claude
 
-Expliquer ce que Claude doit faire quand cette commande est invoquée.
+Expliquer ce que Claude doit faire quand ce skill est invoqué.
 ```
 
 2. Lancer `./install.sh`
-3. Utiliser avec `/ma-commande` dans Claude Code
+3. Utiliser avec `/mon-skill` ou laisser Claude auto-découvrir via les triggers
 
 ### Ajouter un nouvel agent
 
@@ -342,20 +331,6 @@ model: sonnet
 ---
 
 Tu es un expert en X. Ton rôle est de...
-```
-
-2. Lancer `./install.sh`
-
-### Ajouter un nouveau skill
-
-1. Créer `skills/mon-skill/skill.md` :
-```markdown
----
-name: mon-skill
-description: Ce que couvre ce skill
----
-
-# Guidelines détaillées...
 ```
 
 2. Lancer `./install.sh`
@@ -397,23 +372,26 @@ claude-config/
 ├── config/
 │   ├── CLAUDE.md           # Conventions de code
 │   ├── settings.json       # Model, plugins, langue
-│   └── mcp-servers.template.json  # Template serveurs MCP (nécessite clés API)
-├── commands/
-│   ├── validate.md         # Lancer lint/build/tests
-│   ├── implement.md        # Workflow complet de tâche
-│   ├── db-check.md         # Advisors Supabase
-│   ├── git-add-commit-push.md
-│   ├── next-task.md        # Trouver prochaine tâche MVP
-│   ├── refresh-context.md  # Relire docs projet
-│   └── update-progress.md  # Mettre à jour fichier progress
+│   └── mcp-servers.template.json  # Serveurs MCP (auto-fusionnés)
 ├── agents/
 │   ├── code-reviewer.md    # Expert qualité de code
 │   ├── nextjs-developer.md # Spécialiste Next.js
 │   ├── supabase-developer.md # Expert base de données
 │   └── prompt-engineer.md  # Optimisation de prompts
-└── skills/
-    └── design-principles/
-        └── skill.md        # Guide design system
+└── skills/                 # Format unifié (Dec 2025)
+    ├── validate/SKILL.md
+    ├── validate-quick/SKILL.md
+    ├── implement/SKILL.md
+    ├── db-check/SKILL.md
+    ├── security-check/SKILL.md
+    ├── git-add-commit-push/SKILL.md
+    ├── next-task/SKILL.md
+    ├── refresh-context/SKILL.md
+    ├── update-progress/SKILL.md
+    ├── update-docs/SKILL.md
+    ├── validate-update-push/SKILL.md
+    ├── permissions-allow/SKILL.md
+    └── design-principles/SKILL.md
 ```
 
 ---

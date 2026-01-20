@@ -124,6 +124,9 @@ Defines coding standards applied to all projects:
 | **Data Fetching** | Prefer Server Actions over API Routes |
 | **UI** | Tailwind CSS + shadcn/ui |
 | **Performance** | Optimize Web Vitals, WebP images, lazy loading |
+| **No Barrel Imports** | Import directly (`lucide-react/icons/Check`) not from index |
+| **No Waterfalls** | `Promise.all()` for parallel fetches, never sequential `await` |
+| **Deduplication** | `React.cache()` for functions called multiple times in a render |
 
 #### `config/settings.json` - Claude Settings
 
@@ -141,23 +144,31 @@ Defines coding standards applied to all projects:
 | `model` | `opus` | Use Claude Opus (most capable) |
 | `language` | `French` | Claude responds in French |
 | `permissions` | pnpm commands | Auto-allow pnpm dev/build/test/etc. |
-| `enabledPlugins` | 6 plugins | Plugins activated by default |
+| `enabledPlugins` | 7 plugins | Plugins activated by default |
 
 ---
 
-### Custom Commands
+### Skills
 
-Commands are invoked with `/command-name` in Claude Code.
+Skills are the unified format for Claude Code (Dec 2025), replacing the old commands system. They can be invoked manually with `/skill-name` or auto-discovered by Claude based on context.
 
-| Command | When to Use | What it Does |
-|---------|-------------|--------------|
-| `/validate` | Before committing | Runs `pnpm lint` → `pnpm build` → `pnpm test:e2e` in sequence. Stops on first failure. |
-| `/implement <task>` | Starting a new task | Full workflow: read docs → plan with todos → implement → validate → code review → commit |
-| `/db-check` | After DB changes | Checks Supabase advisors for security issues (missing RLS) and performance problems |
-| `/git-add-commit-push` | Ready to commit | Stages all, generates commit message from diff, pushes to current branch |
-| `/next-task` | Between tasks | Reads MVP plan and progress file, identifies the next incomplete task |
-| `/refresh-context` | Starting a session | Re-reads CLAUDE.md, progress.txt, schema.sql to understand project state |
-| `/update-progress` | After completing work | Adds entry to progress.txt with date, files changed, what was done |
+| Skill | Trigger | What it Does |
+|-------|---------|--------------|
+| `/validate` | Before committing | Runs `pnpm lint` → `pnpm build` → `pnpm test:e2e` in sequence |
+| `/validate-quick` | Quick CI check | Runs only `pnpm lint` and `pnpm build` (skips E2E tests) |
+| `/implement <task>` | Starting a new task | Full workflow: read docs → plan → implement → validate → review → commit |
+| `/db-check` | After DB changes | Checks Supabase advisors for security issues and performance |
+| `/security-check` | Before committing | Red-team security audit of recent changes |
+| `/git-add-commit-push` | Ready to commit | Stages all, generates commit message, pushes |
+| `/next-task` | Between tasks | Reads MVP plan, identifies next incomplete task |
+| `/refresh-context` | Starting a session | Re-reads project docs (CLAUDE.md, progress.txt) |
+| `/update-progress` | After work | Adds entry to progress.txt with date and changes |
+| `/update-docs` | After major changes | Updates project documentation |
+| `/validate-update-push` | End of session | Validates, updates progress, commits and pushes |
+| `/permissions-allow` | Setup | Applies standard development permissions |
+| `/design-principles` | UI work | Enforces minimal design system (Linear/Notion/Stripe style) |
+
+**Auto-discovery:** Skills like `db-check` and `security-check` are triggered automatically when relevant (e.g., after database migrations or before commits with security-sensitive changes).
 
 **Example:**
 ```
@@ -194,24 +205,6 @@ Agents are specialized assistants that Claude spawns for specific tasks. They're
 
 ---
 
-### Skills
-
-Skills are detailed guides that Claude follows for specific domains. They're activated automatically when relevant.
-
-| Skill | Purpose |
-|-------|---------|
-| `design-principles` | Enforces a precise, minimal design system inspired by Linear, Notion, and Stripe |
-
-**`design-principles` includes:**
-- 4px grid system for spacing
-- Typography hierarchy (11px-32px scale)
-- Shadow/elevation patterns
-- Color usage rules (gray for structure, color for meaning)
-- Anti-patterns to avoid (no bouncy animations, no gradient decorations)
-- Dark mode considerations
-
----
-
 ### Plugins (user-level only)
 
 Plugins extend Claude Code with additional capabilities.
@@ -221,44 +214,35 @@ Plugins extend Claude Code with additional capabilities.
 | `mgrep` | Semantic code search using embeddings (better than grep for concepts) |
 | `frontend-design` | Generates distinctive, production-ready UI components |
 | `code-review` | Automated code review with security and quality checks |
+| `code-simplifier` | Simplifies and refines code for clarity and maintainability |
 | `typescript-lsp` | TypeScript language server integration |
 | `security-guidance` | Security best practices and vulnerability detection |
 | `context7` | Fetches up-to-date library documentation |
 
 ---
 
-### MCP Servers (Optional)
+### MCP Servers
 
-MCP (Model Context Protocol) servers extend Claude Code with external service integrations. Unlike plugins, MCP servers require separate API keys and are configured in `~/.claude.json`.
+MCP (Model Context Protocol) servers extend Claude Code with external service integrations. They are **automatically merged** into `~/.claude.json` during installation (existing servers are preserved).
 
-**Included template:** `config/mcp-servers.template.json`
-
-| Server | Purpose | Auth Type |
-|--------|---------|-----------|
-| `brave-search` | Web search | API Key (get one at [brave.com/search/api](https://brave.com/search/api)) |
-| `firecrawl` | Advanced web scraping | API Key (get one at [firecrawl.dev](https://firecrawl.dev)) |
+| Server | Purpose | Auth |
+|--------|---------|------|
+| `brave-search` | Web search | API Key ([brave.com/search/api](https://brave.com/search/api)) |
+| `firecrawl` | Advanced web scraping | API Key ([firecrawl.dev](https://firecrawl.dev)) |
 | `supabase` | Database management | OAuth (no key needed) |
+| `exa` | AI-powered web search | OAuth (no key needed) |
+| `context7` | Library documentation | None (free) |
+| `chrome-devtools` | Browser automation | None (local) |
+| `gemini-design-mcp` | Design with Gemini | API Key |
+| `n8n-mcp` | Workflow automation | API Key + URL |
 
-**Setup:**
+**After installation:**
 
-1. Copy the template to your Claude config:
+Edit `~/.claude.json` to add your API keys:
 ```bash
-# First time - create new file
-cp config/mcp-servers.template.json ~/.claude.json
-
-# Or merge with existing config
-cat config/mcp-servers.template.json
-# Then manually add the mcpServers section to your ~/.claude.json
+# Replace YOUR_API_KEY_HERE placeholders with actual keys
+nano ~/.claude.json
 ```
-
-2. Replace the placeholder API keys:
-```bash
-# Edit ~/.claude.json and replace:
-# - YOUR_BRAVE_API_KEY_HERE
-# - YOUR_FIRECRAWL_API_KEY_HERE
-```
-
-3. Restart Claude Code
 
 **Note:** The `~/.claude.json` file contains API keys and should **never** be committed to version control.
 
@@ -287,25 +271,25 @@ git add -A && git commit -m "sync" && git push
 **What gets synced:**
 - `~/.claude/CLAUDE.md` → `config/CLAUDE.md`
 - `~/.claude/settings.json` → `config/settings.json`
-- `~/.claude/commands/*.md` → `commands/`
 - `~/.claude/agents/*.md` → `agents/`
-- `~/.claude/skills/` → `skills/`
+- `~/.claude/skills/*/SKILL.md` → `skills/`
+- MCP servers template from `~/.claude.json`
 
-### Optional: /sync-config command
+### Optional: /sync-config skill
 
-Create a local command for quick syncing (gitignored, paths are user-specific):
+A `/sync-config` skill is included but gitignored (paths are user-specific). Create your own:
 
 ```bash
-cat > ~/.claude/commands/sync-config.md << 'EOF'
+mkdir -p ~/.claude/skills/sync-config
+cat > ~/.claude/skills/sync-config/SKILL.md << 'EOF'
 ---
-allowed-tools: Bash(*)
+name: sync-config
 description: Sync local Claude config to GitHub repo
+triggers: ["/sync-config"]
+tools: Bash
 ---
 
-Run sync and show status:
-```bash
-cd ~/path/to/claude-config && ./sync.sh && git status
-```
+Run: `cd ~/Sites/claudeCode && ./sync.sh && git status`
 EOF
 ```
 
@@ -313,22 +297,27 @@ EOF
 
 ## Customization
 
-### Adding a new command
+### Adding a new skill
 
-1. Create `commands/my-command.md`:
+1. Create `skills/my-skill/SKILL.md`:
 ```markdown
 ---
-allowed-tools: Bash(*), Read, Write
-description: What this command does
+name: my-skill
+description: What this skill does
+triggers:
+  - "/my-skill"
+  - "run my skill"
+tools: Bash, Read, Write
+context: fork
 ---
 
 ## Instructions for Claude
 
-Explain what Claude should do when this command is invoked.
+Explain what Claude should do when this skill is invoked.
 ```
 
 2. Run `./install.sh`
-3. Use with `/my-command` in Claude Code
+3. Use with `/my-skill` or let Claude auto-discover via triggers
 
 ### Adding a new agent
 
@@ -346,19 +335,6 @@ You are an expert in X. Your role is to...
 
 2. Run `./install.sh`
 
-### Adding a new skill
-
-1. Create `skills/my-skill/skill.md`:
-```markdown
----
-name: my-skill
-description: What this skill covers
----
-
-# Detailed guidelines...
-```
-
-2. Run `./install.sh`
 
 ---
 
@@ -397,23 +373,26 @@ claude-config/
 ├── config/
 │   ├── CLAUDE.md           # Code conventions
 │   ├── settings.json       # Model, plugins, language
-│   └── mcp-servers.template.json  # MCP servers template (requires API keys)
-├── commands/
-│   ├── validate.md         # Run lint/build/tests
-│   ├── implement.md        # Full task workflow
-│   ├── db-check.md         # Supabase advisors
-│   ├── git-add-commit-push.md
-│   ├── next-task.md        # Find next MVP task
-│   ├── refresh-context.md  # Re-read project docs
-│   └── update-progress.md  # Update progress file
+│   └── mcp-servers.template.json  # MCP servers (auto-merged)
 ├── agents/
 │   ├── code-reviewer.md    # Code quality expert
 │   ├── nextjs-developer.md # Next.js specialist
 │   ├── supabase-developer.md # Database expert
 │   └── prompt-engineer.md  # Prompt optimization
-└── skills/
-    └── design-principles/
-        └── skill.md        # Design system guide
+└── skills/                 # Unified format (Dec 2025)
+    ├── validate/SKILL.md
+    ├── validate-quick/SKILL.md
+    ├── implement/SKILL.md
+    ├── db-check/SKILL.md
+    ├── security-check/SKILL.md
+    ├── git-add-commit-push/SKILL.md
+    ├── next-task/SKILL.md
+    ├── refresh-context/SKILL.md
+    ├── update-progress/SKILL.md
+    ├── update-docs/SKILL.md
+    ├── validate-update-push/SKILL.md
+    ├── permissions-allow/SKILL.md
+    └── design-principles/SKILL.md
 ```
 
 ---
