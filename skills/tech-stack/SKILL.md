@@ -4,9 +4,9 @@ description: Define the technical stack and architecture for a project. Interact
 triggers:
   - "/tech-stack"
   - "define tech stack"
-  - "définir le stack"
+  - "définir la stack"
   - "choose the stack"
-  - "choisir le stack"
+  - "choisir la stack"
   - "architecture discussion"
   - "discussion architecture"
 tools: Read, Write, Grep, Glob, Bash, Task
