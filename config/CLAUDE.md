@@ -53,6 +53,9 @@ When creating new commands, agents, or instructions, always write them in Englis
 - **State management**: use **Zustand** over React Context for global state
 - **Data fetching**: prefer **Server Actions** over API Routes when possible
 - Follow Next.js docs for Data Fetching, Rendering, Routing
+- **No barrel imports**: import directly (`lucide-react/icons/Check`) not from index
+- **No waterfalls**: `Promise.all()` for parallel fetches, never sequential `await`
+- **Deduplication**: `React.cache()` for functions called multiple times in a render
 
 ## UI & Styling
 
