@@ -22,14 +22,15 @@ Re-read all key documentation files to understand the project.
    - `design-system.md` - UI/UX guidelines
    - `plan.md` - Implementation plan
 
-3. **Implementation plan** (fallback search if not in memory-bank/)
-   - `**/*-implementation-plan.md`
-   - `**/implementation-plan.md`
-   - `**/*plan*.md`
+3. **Implementation plan** (fallback search in priority order if not in memory-bank/)
+   1. `memory-bank/*-implementation-plan.md` or `memory-bank/implementation-plan.md`
+   2. `*-implementation-plan.md` or `implementation-plan.md` (project root)
+   3. `docs/*-implementation-plan.md` or `docs/implementation-plan.md`
+   4. First `**/*implementation-plan*.md` found elsewhere
 
-4. **Progress file** (fallback search)
-   - `progress.txt`, `progress.md`, `PROGRESS.md`
-   - Current project state, completed tasks
+4. **Progress file** (fallback search in priority order)
+   1. `progress.txt`, `progress.md`, `PROGRESS.md` (project root)
+   2. `memory-bank/progress.txt`, `memory-bank/progress.md`
 
 5. **database/schema.sql** (if present)
    - Database structure

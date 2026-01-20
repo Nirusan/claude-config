@@ -30,10 +30,16 @@ args:
      prd_file = memory-bank/prd.md
    ```
 
-3. **Fallback search** (if main project files not found):
-   - Plan: `**/*-implementation-plan.md`, `**/implementation-plan.md`, `**/*plan*.md`
-   - Progress: `progress.txt`, `progress.md`, `PROGRESS.md`
-   - PRD: `**/PRD.md`, `**/prd.md`
+3. **Fallback search** (if main project files not found, in priority order):
+   - Plan:
+     1. `memory-bank/*-implementation-plan.md` or `memory-bank/implementation-plan.md`
+     2. `*-implementation-plan.md` or `implementation-plan.md` (project root)
+     3. `docs/*-implementation-plan.md` or `docs/implementation-plan.md`
+     4. First `**/*implementation-plan*.md` found elsewhere
+   - Progress: `progress.txt`, `progress.md`, `PROGRESS.md` (project root first, then memory-bank/)
+   - PRD: `memory-bank/prd.md`, `memory-bank/PRD.md`, `prd.md`, `PRD.md`
+
+   **If multiple matches**: Ask the user which file to use.
 
 ## Phase 1: Understand
 

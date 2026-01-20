@@ -37,11 +37,17 @@ Keep tracking files synchronized with completed work.
 
 Search for the plan and progress files at the determined paths.
 
-Fallback search if not found:
-- `**/*-implementation-plan.md`
-- `**/implementation-plan.md`
-- `**/*plan*.md`
-- `progress.txt`, `progress.md`, `PROGRESS.md`
+Fallback search (in priority order):
+- Plan:
+  1. `memory-bank/*-implementation-plan.md` or `memory-bank/implementation-plan.md`
+  2. `*-implementation-plan.md` or `implementation-plan.md` (project root)
+  3. `docs/*-implementation-plan.md` or `docs/implementation-plan.md`
+  4. First `**/*implementation-plan*.md` found elsewhere
+- Progress:
+  1. `progress.txt`, `progress.md`, `PROGRESS.md` (project root)
+  2. `memory-bank/progress.txt`, `memory-bank/progress.md`
+
+**If multiple matches**: Ask the user which file to use.
 
 If no implementation plan exists, skip plan updates and only update progress.
 

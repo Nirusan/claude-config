@@ -36,7 +36,10 @@ If no updates needed, continue.
 ## Step 3: Update Progress (Conditional)
 
 **Check if applicable:**
-- Search for implementation plan: `**/*-implementation-plan.md`, `**/implementation-plan.md`, `**/*plan*.md`
+- Search for implementation plan (in priority order):
+  1. `memory-bank/plan.md` or `memory-bank/*-implementation-plan.md`
+  2. `*-implementation-plan.md` or `implementation-plan.md` (project root)
+  3. `docs/*-implementation-plan.md`
 - If NO plan exists, skip this step
 
 **If plan exists:**

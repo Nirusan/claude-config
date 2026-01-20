@@ -35,19 +35,21 @@ args:
 
 Find and read the implementation plan file at `{plan_file}`.
 
-Fallback search if not found:
-- `**/*-implementation-plan.md`
-- `**/implementation-plan.md`
-- `**/*plan*.md`
+Fallback search (in priority order):
+1. `memory-bank/*-implementation-plan.md` or `memory-bank/implementation-plan.md`
+2. `*-implementation-plan.md` or `implementation-plan.md` (project root)
+3. `docs/*-implementation-plan.md` or `docs/implementation-plan.md`
+4. First `**/*implementation-plan*.md` found elsewhere
+
+**If multiple matches**: Ask the user which file to use.
 
 ## Step 2: Read Progress
 
 Find and read the progress tracking file at `{progress_file}`.
 
-Fallback search:
-- `progress.txt`
-- `progress.md`
-- `PROGRESS.md`
+Fallback search (in priority order):
+1. `progress.txt`, `progress.md`, `PROGRESS.md` (project root)
+2. `memory-bank/progress.txt`, `memory-bank/progress.md`
 
 ## Step 3: Analyze
 
