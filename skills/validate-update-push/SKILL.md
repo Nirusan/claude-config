@@ -36,7 +36,7 @@ If no updates needed, continue.
 ## Step 3: Update Progress (Conditional)
 
 **Check if applicable:**
-- Search for `*-implementation-plan.md` in the project
+- Search for implementation plan: `**/*-implementation-plan.md`, `**/implementation-plan.md`, `**/*plan*.md`
 - If NO plan exists, skip this step
 
 **If plan exists:**

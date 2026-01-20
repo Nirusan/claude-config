@@ -17,16 +17,21 @@ Re-read all key documentation files to understand the project.
    - Rules to follow
 
 2. **memory-bank/** (if present, exclude brainstorm.md)
-   - `PRD.md` - Product Requirements
+   - `prd.md` / `PRD.md` - Product Requirements
    - `tech-stack.md` - Detailed stack
    - `design-system.md` - UI/UX guidelines
-   - `mvp-implementation-plan.md` - Implementation plan
+   - `plan.md` - Implementation plan
 
-3. **progress.txt** or **PROGRESS.md**
-   - Current project state
-   - Completed tasks
+3. **Implementation plan** (fallback search if not in memory-bank/)
+   - `**/*-implementation-plan.md`
+   - `**/implementation-plan.md`
+   - `**/*plan*.md`
 
-4. **database/schema.sql** (if present)
+4. **Progress file** (fallback search)
+   - `progress.txt`, `progress.md`, `PROGRESS.md`
+   - Current project state, completed tasks
+
+5. **database/schema.sql** (if present)
    - Database structure
 
 ## Files to Ignore
