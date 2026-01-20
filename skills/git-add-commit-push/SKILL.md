@@ -1,6 +1,15 @@
 ---
 name: git-add-commit-push
 description: Stage all changes, create a commit with auto-generated or custom message, and push to current branch. Use when the user says "commit", "push", "save changes", or wants to finalize their work.
+triggers:
+  - "/commit"
+  - "/push"
+  - "commit"
+  - "push"
+  - "commiter"
+  - "pousser"
+  - "save changes"
+  - "sauvegarder les changements"
 allowed-tools: Bash(git:*)
 user-invocable: true
 ---

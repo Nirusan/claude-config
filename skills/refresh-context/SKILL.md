@@ -1,6 +1,15 @@
 ---
 name: refresh-context
 description: Re-read project documentation (CLAUDE.md, progress.txt, memory-bank/) to refresh context. Use when starting a new session, after a break, or when the user says "refresh", "reload context", "what's the current state", or "on en est où".
+triggers:
+  - "/refresh-context"
+  - "/refresh"
+  - "refresh context"
+  - "reload context"
+  - "what's the current state"
+  - "on en est où"
+  - "rafraîchir le contexte"
+  - "quel est l'état actuel"
 allowed-tools: Read, Glob
 user-invocable: true
 ---

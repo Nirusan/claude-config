@@ -1,6 +1,12 @@
 ---
 name: update-progress
 description: Update progress tracking files (progress.md and implementation plan). Use after completing tasks, implementing features, or when the user wants to record progress.
+triggers:
+  - "/update-progress"
+  - "update progress"
+  - "mettre à jour le progrès"
+  - "mettre à jour l'avancement"
+  - "maj progrès"
 allowed-tools: Read, Edit, Write, Glob, Bash
 user-invocable: true
 args:

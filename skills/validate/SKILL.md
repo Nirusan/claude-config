@@ -1,6 +1,13 @@
 ---
 name: validate
 description: Run lint, build, and E2E tests in sequence. Use when the user wants to validate their code, run tests, or check if everything works before committing.
+triggers:
+  - "/validate"
+  - "validate"
+  - "valider"
+  - "run tests"
+  - "lancer les tests"
+  - "vérifier le build"
 allowed-tools: Bash(pnpm:*), Bash(grep:*), Bash(cat:*), Read
 user-invocable: true
 ---

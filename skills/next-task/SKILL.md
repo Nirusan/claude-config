@@ -1,6 +1,13 @@
 ---
 name: next-task
 description: Identify the next incomplete task from the implementation plan. Use when the user asks "what's next", "next task", "c'est quoi la suite", or wants to know what to work on next.
+triggers:
+  - "/next-task"
+  - "what's next"
+  - "next task"
+  - "c'est quoi la suite"
+  - "prochaine tâche"
+  - "quelle est la suite"
 allowed-tools: Read, Glob
 user-invocable: true
 args:

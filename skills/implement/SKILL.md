@@ -1,6 +1,14 @@
 ---
 name: implement
 description: Complete implementation workflow for a task - understand context, plan, implement, validate, review, and commit. Use when the user wants to implement a feature, fix a bug, or complete a specific development task.
+triggers:
+  - "/implement"
+  - "implement"
+  - "implémenter"
+  - "let's implement"
+  - "start coding"
+  - "on code"
+  - "développer"
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, TodoWrite, Skill, mcp__supabase__list_tables, mcp__supabase__get_advisors, mcp__supabase__execute_sql, mcp__plugin_context7_context7__resolve-library-id, mcp__plugin_context7_context7__query-docs
 user-invocable: true
 args:
