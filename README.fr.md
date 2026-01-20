@@ -150,37 +150,62 @@ Définit les standards de code appliqués à tous les projets :
 
 ### Skills
 
-Les skills sont le format unifié de Claude Code (Dec 2025), remplaçant l'ancien système de commandes. Ils peuvent être invoqués manuellement avec `/nom-skill` ou auto-découverts par Claude selon le contexte.
+Les skills sont le format unifié de Claude Code (Dec 2025), remplaçant l'ancien système de commandes. Ils peuvent être invoqués manuellement avec `/nom-skill` ou auto-découverts par Claude selon le contexte. Tous les skills supportent les **triggers en français** pour l'auto-découverte.
 
-| Skill | Déclencheur | Ce qu'il fait |
-|-------|-------------|---------------|
-| `/validate` | Avant de commit | Exécute `pnpm lint` → `pnpm build` → `pnpm test:e2e` en séquence |
-| `/validate-quick` | Check CI rapide | Exécute seulement `pnpm lint` et `pnpm build` (saute les tests E2E) |
-| `/implement <tâche>` | Nouvelle tâche | Workflow complet : lire docs → planifier → implémenter → valider → review → commit |
+#### Workflow BMAD Lite (Découverte produit → Implémentation)
+
+| Skill | Triggers | Ce qu'il fait |
+|-------|----------|---------------|
+| `/brainstorm` | "brainstorm", "réfléchissons", "explorer cette idée" | Session d'idéation interactive → crée `memory-bank/brief.md` |
+| `/prd` | "create prd", "créer un prd", "définir les besoins" | Définir les besoins → crée `memory-bank/prd.md` |
+| `/tech-stack` | "define tech stack", "définir la stack" | Décisions d'architecture → crée `memory-bank/tech-stack.md` |
+| `/implementation-plan` | "/plan", "créer le plan", "découper en stories" | Découper en stories → crée `memory-bank/plan.md` + `progress.md` |
+
+**Flow BMAD Lite :**
+```
+/brainstorm → /prd → /tech-stack → /implementation-plan → /implement
+```
+
+#### Skills de développement
+
+| Skill | Triggers | Ce qu'il fait |
+|-------|----------|---------------|
+| `/validate` | "valider", "lancer les tests" | Exécute `pnpm lint` → `pnpm build` → `pnpm test:e2e` en séquence |
+| `/implement` | "implémenter", "on code", "développer" | Workflow complet : lire docs → planifier → implémenter → valider → review → commit |
+| `/next-task` | "what's next", "c'est quoi la suite", "prochaine tâche" | Lit le plan, identifie la prochaine tâche |
+| `/refresh-context` | "on en est où", "rafraîchir le contexte" | Relit les docs projet (CLAUDE.md, progress.md) |
+| `/update-progress` | "update progress", "maj progrès" | Met à jour progress.md avec le travail complété |
+| `/git-add-commit-push` | "commit", "push", "pousser" | Stage tout, génère le message de commit, push |
+| `/validate-update-push` | Fin de session | Valide, met à jour le progress, commit et push |
+
+#### Skills utilitaires
+
+| Skill | Triggers | Ce qu'il fait |
+|-------|----------|---------------|
 | `/db-check` | Après modifs DB | Vérifie les advisors Supabase pour sécurité et performance |
 | `/security-check` | Avant de commit | Audit sécurité red-team des changements récents |
-| `/git-add-commit-push` | Prêt à commit | Stage tout, génère le message de commit, push |
-| `/next-task` | Entre deux tâches | Lit le plan MVP, identifie la prochaine tâche |
-| `/refresh-context` | Début de session | Relit les docs projet (CLAUDE.md, progress.txt) |
-| `/update-progress` | Après travail | Ajoute une entrée dans progress.txt avec date et changements |
-| `/update-docs` | Après changements majeurs | Met à jour la documentation du projet |
-| `/validate-update-push` | Fin de session | Valide, met à jour le progress, commit et push |
 | `/permissions-allow` | Setup | Applique les permissions de développement standard |
 | `/design-principles` | Travail UI | Applique un design system minimal (style Linear/Notion/Stripe) |
 
 **Auto-découverte :** Les skills comme `db-check` et `security-check` sont déclenchés automatiquement quand c'est pertinent (ex: après des migrations DB ou avant des commits avec des changements sensibles).
+
+**Workflows par feature :** Les skills supportent le flag `--feature=X` pour travailler dans `memory-bank/features/{name}/` :
+```bash
+/prd --feature=dark-mode        # Crée memory-bank/features/dark-mode/prd.md
+/implement --feature=dark-mode  # Travaille sur le plan dark-mode
+```
 
 **Exemple :**
 ```
 > /implement Ajouter un toggle dark mode dans la page settings
 
 Claude va :
-1. Lire les docs projet (CLAUDE.md, progress.txt)
+1. Lire les docs projet (CLAUDE.md, progress.md)
 2. Créer une todo list avec sous-tâches
 3. Implémenter la feature
 4. Lancer lint/build/tests
 5. Review le code
-6. Mettre à jour progress.txt
+6. Mettre à jour progress.md
 7. Commit avec message descriptif
 ```
 
@@ -190,18 +215,33 @@ Claude va :
 
 Les agents sont des assistants spécialisés que Claude spawn pour des tâches spécifiques. Ils sont déclenchés automatiquement selon le contexte ou explicitement via l'outil Task.
 
-| Agent | Expertise | Déclenché quand |
-|-------|-----------|-----------------|
-| `code-reviewer` | Qualité de code, sécurité, bonnes pratiques | Après des changements de code, pendant `/implement` |
-| `nextjs-developer` | Next.js 14+, App Router, RSC, Server Actions | Travail sur du code Next.js |
-| `supabase-developer` | PostgreSQL, Auth, policies RLS | Requêtes DB, problèmes d'auth |
-| `prompt-engineer` | Prompts Claude API, extraction de contexte | Écriture de prompts pour suggestions IA |
+#### Agents BMAD Lite (Découverte produit)
+
+| Agent | Modèle | Expertise | Utilisé par |
+|-------|--------|-----------|-------------|
+| `analyst` | inherit | Découverte de problèmes, analyse de marché, idéation | `/brainstorm` |
+| `product-manager` | inherit | Besoins, user stories, priorisation | `/prd` |
+| `architect` | opus | Décisions tech stack, design système, planification | `/tech-stack`, `/implementation-plan` |
+
+#### Agents de développement
+
+| Agent | Modèle | Expertise | Déclenché quand |
+|-------|--------|-----------|-----------------|
+| `code-reviewer` | inherit | Qualité de code, sécurité, bonnes pratiques | Après des changements de code, pendant `/implement` |
+| `nextjs-developer` | inherit | Next.js 14+, App Router, RSC, Server Actions | Travail sur du code Next.js |
+| `supabase-developer` | inherit | PostgreSQL, Auth, policies RLS | Requêtes DB, problèmes d'auth |
+| `prompt-engineer` | inherit | Prompts Claude API, extraction de contexte | Écriture de prompts pour suggestions IA |
 
 **Ce que les agents apportent :**
+- `analyst` : Pose des questions pertinentes, challenge les hypothèses, crée des briefs produit
+- `product-manager` : Définit le scope MVP, écrit les user stories avec critères d'acceptance
+- `architect` : Prend des décisions tech pragmatiques, découpe les features en stories implémentables
 - `code-reviewer` : Vérifie les vulnérabilités, code smells, suggère des améliorations
 - `nextjs-developer` : Connaît les APIs async (`await cookies()`), patterns de data fetching
 - `supabase-developer` : Écrit les policies RLS, optimise les requêtes, gère les flows d'auth
 - `prompt-engineer` : Optimise les prompts pour génération de réponses Twitter/Reddit/LinkedIn
+
+**Héritage de modèle :** Tous les agents utilisent `model: inherit` (utilise le modèle de la session) sauf `architect` qui utilise `opus` pour les décisions architecturales complexes.
 
 ---
 
@@ -327,13 +367,15 @@ Expliquer ce que Claude doit faire quand ce skill est invoqué.
 name: mon-agent
 description: Quand utiliser cet agent
 tools: Read, Write, Bash
-model: sonnet
+model: inherit
 ---
 
 Tu es un expert en X. Ton rôle est de...
 ```
 
 2. Lancer `./install.sh`
+
+**Note :** Utiliser `model: inherit` pour utiliser le modèle de la session courante, ou `model: opus` pour les tâches complexes nécessitant le maximum de capacité.
 
 ---
 
@@ -374,21 +416,26 @@ claude-config/
 │   ├── settings.json       # Model, plugins, langue
 │   └── mcp-servers.template.json  # Serveurs MCP (auto-fusionnés)
 ├── agents/
+│   ├── analyst.md          # BMAD: Découverte de problèmes, idéation
+│   ├── product-manager.md  # BMAD: Besoins, user stories
+│   ├── architect.md        # BMAD: Tech stack, plans d'implémentation
 │   ├── code-reviewer.md    # Expert qualité de code
 │   ├── nextjs-developer.md # Spécialiste Next.js
 │   ├── supabase-developer.md # Expert base de données
 │   └── prompt-engineer.md  # Optimisation de prompts
 └── skills/                 # Format unifié (Dec 2025)
-    ├── validate/SKILL.md
-    ├── validate-quick/SKILL.md
+    ├── brainstorm/SKILL.md       # BMAD: Idéation → brief.md
+    ├── prd/SKILL.md              # BMAD: Besoins → prd.md
+    ├── tech-stack/SKILL.md       # BMAD: Architecture → tech-stack.md
+    ├── implementation-plan/SKILL.md  # BMAD: Stories → plan.md
     ├── implement/SKILL.md
+    ├── validate/SKILL.md
     ├── db-check/SKILL.md
     ├── security-check/SKILL.md
     ├── git-add-commit-push/SKILL.md
     ├── next-task/SKILL.md
     ├── refresh-context/SKILL.md
     ├── update-progress/SKILL.md
-    ├── update-docs/SKILL.md
     ├── validate-update-push/SKILL.md
     ├── permissions-allow/SKILL.md
     └── design-principles/SKILL.md
