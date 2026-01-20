@@ -3,22 +3,70 @@
     "brave-search": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-brave-search"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
       "env": {
-        "BRAVE_API_KEY": "YOUR_BRAVE_API_KEY_HERE"
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
       }
     },
     "firecrawl": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"],
+      "args": [
+        "-y",
+        "firecrawl-mcp"
+      ],
       "env": {
-        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_API_KEY_HERE"
+        "FIRECRAWL_API_KEY": "YOUR_API_KEY_HERE"
       }
     },
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp"
+    },
+    "exa": {
+      "type": "http",
+      "url": "https://mcp.exa.ai/mcp",
+      "headers": {}
+    },
+    "gemini-design-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://gemini-design-mcp-server-production.up.railway.app/mcp",
+        "--header",
+        "YOUR_API_KEY_HERE"
+      ],
+      "env": {}
+    },
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@latest"
+      ],
+      "env": {}
+    },
+    "n8n-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "n8n-mcp"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "YOUR_API_KEY_HERE",
+        "N8N_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
     }
   }
 }

@@ -16,6 +16,7 @@ commands/sync-config.md
 *.secret*
 .env
 .env.*
+.mcp.json
 
 # Backup files
 *.bak

@@ -60,6 +60,28 @@ if [[ -d "$CLAUDE_DIR/skills" ]]; then
     done
 fi
 
+# Sync MCP servers config (mask API keys)
+echo "==> Syncing MCP servers template..."
+if command -v jq &> /dev/null && [[ -f "$HOME/.claude.json" ]]; then
+    # Extract mcpServers and mask API keys/sensitive URLs
+    jq '{mcpServers: .mcpServers} | walk(
+      if type == "string" and (
+        test("^(sk-|fc-|BS|ey)") or
+        test("AIza") or
+        test("^Bearer ") or
+        test("Authorization:Bearer") or
+        test("srv[0-9]+\\.hstgr")
+      )
+      then "YOUR_API_KEY_HERE"
+      else . end
+    )' "$HOME/.claude.json" > "$SCRIPT_DIR/config/mcp-servers.template.json"
+    echo "    ✓ config/mcp-servers.template.json"
+else
+    if ! command -v jq &> /dev/null; then
+        echo "    ⚠ jq not installed, skipping MCP sync"
+    fi
+fi
+
 echo ""
 echo "==> Sync complete!"
 echo ""

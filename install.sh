@@ -158,6 +158,44 @@ merge_settings() {
     fi
 }
 
+# Function to merge MCP servers from template to ~/.claude.json
+merge_mcp_servers() {
+    local template="$1"
+    local claude_json="$HOME/.claude.json"
+
+    # Skip if template doesn't exist
+    if [[ ! -f "$template" ]]; then
+        echo "    Note: MCP template not found, skipping MCP servers setup"
+        return
+    fi
+
+    # Check if jq is available
+    if ! command -v jq &> /dev/null; then
+        echo "    Note: Install 'jq' to automatically configure MCP servers"
+        echo "    MCP template available at: $template"
+        return
+    fi
+
+    if [[ -f "$claude_json" ]]; then
+        # Merge: new servers from template + preserve existing values (existing takes priority)
+        local merged
+        merged=$(jq -s '
+            .[0].mcpServers as $template |
+            .[1] |
+            .mcpServers = ($template * .mcpServers)
+        ' "$template" "$claude_json" 2>/dev/null)
+        if [[ -n "$merged" ]]; then
+            echo "$merged" > "$claude_json.tmp"
+            mv "$claude_json.tmp" "$claude_json"
+            echo "    Merged MCP servers (existing keys preserved)"
+        fi
+    else
+        # Create new file with template mcpServers
+        jq '{mcpServers: .mcpServers}' "$template" > "$claude_json"
+        echo "    Created ~/.claude.json with MCP servers template"
+    fi
+}
+
 # Install config files
 echo "==> Copying config files..."
 if [[ "$INSTALL_MODE" == "project" ]]; then
@@ -169,6 +207,18 @@ else
     install_file "config/settings.json" "$CLAUDE_DIR/settings.json"
     # Merge existing settings (enabledPlugins + permissions.allow)
     merge_settings "$CLAUDE_DIR/settings.json"
+
+    # Install MCP servers template
+    echo "==> Configuring MCP servers..."
+    if [[ "$LOCAL_INSTALL" == true ]]; then
+        merge_mcp_servers "$SCRIPT_DIR/config/mcp-servers.template.json"
+    else
+        # Download template first, then merge
+        TMP_MCP="/tmp/mcp-servers.template.json"
+        curl -sSL "$REPO_URL/config/mcp-servers.template.json" -o "$TMP_MCP"
+        merge_mcp_servers "$TMP_MCP"
+        rm -f "$TMP_MCP"
+    fi
 fi
 
 # Install skills (unified format - replaces commands)
@@ -273,12 +323,13 @@ echo ""
 echo "Also installed:"
 echo "  - 13 skills (/validate, /implement, /security-check, etc.)"
 echo "  - 4 custom agents"
+echo "  - MCP servers template (merged into ~/.claude.json)"
 echo ""
 echo "Skills are the unified format replacing commands (Claude Code Dec 2025)."
 echo "Invoke manually with /skill-name or let Claude auto-discover them."
 echo ""
-echo "Optional: Configure MCP servers (brave-search, firecrawl, supabase)"
-echo "  See: config/mcp-servers.template.json"
-echo "  Requires API keys - see README for setup instructions"
+echo "MCP Servers configured (edit ~/.claude.json to add API keys):"
+echo "  - brave-search, firecrawl, supabase, exa, context7"
+echo "  - gemini-design-mcp, chrome-devtools, n8n-mcp"
 echo ""
 echo "Note: Restart Claude Code for changes to take effect."
