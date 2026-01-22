@@ -77,4 +77,6 @@ When creating new commands, agents, or instructions, always write them in Englis
 
 - Automatically use **Context7 MCP** for library/API documentation, code generation, and configuration
 - Use **frontend-design** skill to create distinctive, production-ready UI components (avoid generic AI aesthetics)
-- For reading URLs: **WebFetch** by default (free, sufficient for docs/articles), **Firecrawl** only for JS-heavy pages or advanced extraction
+- **Web search:** Use **Tavily** (`tavily_search`) as the primary tool for web research and real-time information
+- **Reading URLs:** Use **WebFetch** by default (free, sufficient for docs/articles)
+- **Fallback to Firecrawl** for: JS-heavy pages/SPAs, multi-page crawling, structured data extraction with schema, or when anti-bot bypass is needed

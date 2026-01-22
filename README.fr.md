@@ -184,10 +184,13 @@ Les skills sont le format unifié de Claude Code (Dec 2025), remplaçant l'ancie
 |-------|----------|---------------|
 | `/db-check` | Après modifs DB | Vérifie les advisors Supabase pour sécurité et performance |
 | `/security-check` | Avant de commit | Audit sécurité red-team des changements récents |
+| `/seo-check` | Travail sur pages | Audit SEO : metadata, structure, Core Web Vitals, accessibilité |
 | `/permissions-allow` | Setup | Applique les permissions de développement standard |
 | `/design-principles` | Travail UI | Applique un design system minimal (style Linear/Notion/Stripe) |
+| `/validate-quick` | Avant commits | Validation rapide pass/fail (lint + build) |
+| `/sync-config` | Manuel uniquement | Synchronise la config locale `~/.claude/` vers le repo GitHub |
 
-**Auto-découverte :** Les skills comme `db-check` et `security-check` sont déclenchés automatiquement quand c'est pertinent (ex: après des migrations DB ou avant des commits avec des changements sensibles).
+**Auto-découverte :** Les skills comme `db-check`, `security-check` et `seo-check` sont déclenchés automatiquement quand c'est pertinent (ex: après des migrations DB, avant des commits avec des changements sensibles, ou lors du travail sur des pages/contenus).
 
 **Workflows par feature :** Les skills supportent le flag `--feature=X` pour travailler dans `memory-bank/features/{name}/` :
 ```bash
@@ -231,6 +234,7 @@ Les agents sont des assistants spécialisés que Claude spawn pour des tâches s
 | `nextjs-developer` | inherit | Next.js 14+, App Router, RSC, Server Actions | Travail sur du code Next.js |
 | `supabase-developer` | inherit | PostgreSQL, Auth, policies RLS | Requêtes DB, problèmes d'auth |
 | `prompt-engineer` | inherit | Prompts Claude API, extraction de contexte | Écriture de prompts pour suggestions IA |
+| `seo-specialist` | inherit | Optimisation SEO, Core Web Vitals, accessibilité | Création/modification de pages, travail sur le contenu |
 
 **Ce que les agents apportent :**
 - `analyst` : Pose des questions pertinentes, challenge les hypothèses, crée des briefs produit
@@ -315,23 +319,15 @@ git add -A && git commit -m "sync" && git push
 - `~/.claude/skills/*/SKILL.md` → `skills/`
 - Template serveurs MCP depuis `~/.claude.json`
 
-### Optionnel : skill /sync-config
+### Utiliser le skill /sync-config
 
-Un skill `/sync-config` est inclus mais gitgnoré (chemins spécifiques à l'utilisateur). Crée le tien :
+Le skill `/sync-config` est maintenant inclus par défaut. Il lance le script de sync et affiche le statut git :
 
 ```bash
-mkdir -p ~/.claude/skills/sync-config
-cat > ~/.claude/skills/sync-config/SKILL.md << 'EOF'
----
-name: sync-config
-description: Sync local Claude config to GitHub repo
-triggers: ["/sync-config"]
-tools: Bash
----
-
-Exécuter : `cd ~/Sites/claudeCode && ./sync.sh && git status`
-EOF
+/sync-config
 ```
+
+**Note :** Le skill utilise `disable-model-invocation: true` donc il ne sera pas déclenché automatiquement - tu dois l'invoquer manuellement.
 
 ---
 
@@ -422,7 +418,8 @@ claude-config/
 │   ├── code-reviewer.md    # Expert qualité de code
 │   ├── nextjs-developer.md # Spécialiste Next.js
 │   ├── supabase-developer.md # Expert base de données
-│   └── prompt-engineer.md  # Optimisation de prompts
+│   ├── prompt-engineer.md  # Optimisation de prompts
+│   └── seo-specialist.md   # Expert optimisation SEO
 └── skills/                 # Format unifié (Dec 2025)
     ├── brainstorm/SKILL.md       # BMAD: Idéation → brief.md
     ├── prd/SKILL.md              # BMAD: Besoins → prd.md
@@ -430,15 +427,18 @@ claude-config/
     ├── implementation-plan/SKILL.md  # BMAD: Stories → plan.md
     ├── implement/SKILL.md
     ├── validate/SKILL.md
+    ├── validate-quick/SKILL.md   # Vérification rapide pass/fail
     ├── db-check/SKILL.md
     ├── security-check/SKILL.md
+    ├── seo-check/SKILL.md        # Audit SEO
     ├── git-add-commit-push/SKILL.md
     ├── next-task/SKILL.md
     ├── refresh-context/SKILL.md
     ├── update-progress/SKILL.md
     ├── validate-update-push/SKILL.md
     ├── permissions-allow/SKILL.md
-    └── design-principles/SKILL.md
+    ├── design-principles/SKILL.md
+    └── sync-config/SKILL.md      # Sync config vers repo
 ```
 
 ---

@@ -184,10 +184,13 @@ Skills are the unified format for Claude Code (Dec 2025), replacing the old comm
 |-------|----------|--------------|
 | `/db-check` | After DB changes | Checks Supabase advisors for security issues and performance |
 | `/security-check` | Before committing | Red-team security audit of recent changes |
+| `/seo-check` | When working on pages | SEO audit: metadata, structure, Core Web Vitals, accessibility |
 | `/permissions-allow` | Setup | Applies standard development permissions |
 | `/design-principles` | UI work | Enforces minimal design system (Linear/Notion/Stripe style) |
+| `/validate-quick` | Before commits | Quick pass/fail validation (lint + build) |
+| `/sync-config` | Manual only | Syncs local `~/.claude/` config to GitHub repo |
 
-**Auto-discovery:** Skills like `db-check` and `security-check` are triggered automatically when relevant (e.g., after database migrations or before commits with security-sensitive changes).
+**Auto-discovery:** Skills like `db-check`, `security-check`, and `seo-check` are triggered automatically when relevant (e.g., after database migrations, before commits with security-sensitive changes, or when working on pages/content).
 
 **Feature-specific workflows:** Skills support `--feature=X` flag to work in `memory-bank/features/{name}/` subdirectories:
 ```bash
@@ -231,6 +234,7 @@ Agents are specialized assistants that Claude spawns for specific tasks. They're
 | `nextjs-developer` | inherit | Next.js 14+, App Router, RSC, Server Actions | Working on Next.js code |
 | `supabase-developer` | inherit | PostgreSQL, Auth, RLS policies | Database queries, auth issues |
 | `prompt-engineer` | inherit | Claude API prompts, context extraction | Writing AI suggestion prompts |
+| `seo-specialist` | inherit | SEO optimization, Core Web Vitals, accessibility | Creating/modifying pages, content work |
 
 **What agents provide:**
 - `analyst`: Asks probing questions, challenges assumptions, creates product briefs
@@ -315,23 +319,15 @@ git add -A && git commit -m "sync" && git push
 - `~/.claude/skills/*/SKILL.md` → `skills/`
 - MCP servers template from `~/.claude.json`
 
-### Optional: /sync-config skill
+### Using /sync-config skill
 
-A `/sync-config` skill is included but gitignored (paths are user-specific). Create your own:
+The `/sync-config` skill is now included by default. It runs the sync script and shows git status:
 
 ```bash
-mkdir -p ~/.claude/skills/sync-config
-cat > ~/.claude/skills/sync-config/SKILL.md << 'EOF'
----
-name: sync-config
-description: Sync local Claude config to GitHub repo
-triggers: ["/sync-config"]
-tools: Bash
----
-
-Run: `cd ~/Sites/claudeCode && ./sync.sh && git status`
-EOF
+/sync-config
 ```
+
+**Note:** The skill uses `disable-model-invocation: true` so it won't be triggered automatically - you must invoke it manually.
 
 ---
 
@@ -423,7 +419,8 @@ claude-config/
 │   ├── code-reviewer.md    # Code quality expert
 │   ├── nextjs-developer.md # Next.js specialist
 │   ├── supabase-developer.md # Database expert
-│   └── prompt-engineer.md  # Prompt optimization
+│   ├── prompt-engineer.md  # Prompt optimization
+│   └── seo-specialist.md   # SEO optimization expert
 └── skills/                 # Unified format (Dec 2025)
     ├── brainstorm/SKILL.md       # BMAD: Ideation → brief.md
     ├── prd/SKILL.md              # BMAD: Requirements → prd.md
@@ -431,15 +428,18 @@ claude-config/
     ├── implementation-plan/SKILL.md  # BMAD: Stories → plan.md
     ├── implement/SKILL.md
     ├── validate/SKILL.md
+    ├── validate-quick/SKILL.md   # Quick pass/fail check
     ├── db-check/SKILL.md
     ├── security-check/SKILL.md
+    ├── seo-check/SKILL.md        # SEO audit
     ├── git-add-commit-push/SKILL.md
     ├── next-task/SKILL.md
     ├── refresh-context/SKILL.md
     ├── update-progress/SKILL.md
     ├── validate-update-push/SKILL.md
     ├── permissions-allow/SKILL.md
-    └── design-principles/SKILL.md
+    ├── design-principles/SKILL.md
+    └── sync-config/SKILL.md      # Sync config to repo
 ```
 
 ---
