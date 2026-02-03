@@ -25,7 +25,6 @@
       "Bash(pnpm start)"
     ]
   },
-  "model": "opus",
   "enabledPlugins": {
     "mgrep@Mixedbread-Grep": true,
     "frontend-design@claude-plugins-official": true,

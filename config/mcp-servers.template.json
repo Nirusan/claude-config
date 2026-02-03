@@ -31,17 +31,6 @@
       "url": "https://mcp.exa.ai/mcp",
       "headers": {}
     },
-    "gemini-design-mcp": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://gemini-design-mcp-server-production.up.railway.app/mcp",
-        "--header",
-        "YOUR_API_KEY_HERE"
-      ],
-      "env": {}
-    },
     "chrome-devtools": {
       "type": "stdio",
       "command": "npx",
@@ -67,6 +56,21 @@
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
+    },
+    "tavily": {
+      "type": "http",
+      "url": "YOUR_API_KEY_HERE"
+    },
+    "gemini-design-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://gemini-design-mcp-server-production.up.railway.app/mcp",
+        "--header",
+        "YOUR_API_KEY_HERE"
+      ],
+      "env": {}
     }
   }
 }

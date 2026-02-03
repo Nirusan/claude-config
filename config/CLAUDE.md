@@ -80,3 +80,58 @@ When creating new commands, agents, or instructions, always write them in Englis
 - **Web search:** Use **Tavily** (`tavily_search`) as the primary tool for web research and real-time information
 - **Reading URLs:** Use **WebFetch** by default (free, sufficient for docs/articles)
 - **Fallback to Firecrawl** for: JS-heavy pages/SPAs, multi-page crawling, structured data extraction with schema, or when anti-bot bypass is needed
+
+## MCP Gemini Design - MANDATORY WORKFLOW
+
+**ABSOLUTE RULE**: You NEVER write frontend/UI code yourself. Gemini is your frontend developer.
+
+### Available Tools
+
+| Tool | Purpose |
+|------|---------|
+| `generate_vibes` | Generates a visual page with 5 differently styled sections. User picks favorite → becomes design-system.md |
+| `create_frontend` | Creates a NEW complete file (page, component, section) |
+| `modify_frontend` | Makes ONE design modification to existing code. Returns FIND/REPLACE block |
+| `snippet_frontend` | Generates a code snippet to INSERT into existing file |
+
+### Workflow (No Alternatives)
+
+**STEP 1**: Check if `design-system.md` exists at project root BEFORE any frontend call.
+
+**STEP 2A** (if design-system.md DOES NOT EXIST):
+1. Call `generate_vibes` with projectDescription, projectType, techStack
+2. Ask: "You don't have a design system. Can I create vibes-selection.tsx so you can visually choose your style?"
+3. User chooses: "vibe 3" or "the 5th one"
+4. Extract THE ENTIRE CODE between `<!-- VIBE_X_START -->` and `<!-- VIBE_X_END -->`
+5. Save it to `design-system.md`
+6. Delete vibes-selection.tsx
+
+**STEP 2B** (if design-system.md EXISTS): Read it and use for frontend calls.
+
+**STEP 3**: For EVERY frontend call, you MUST pass:
+- `designSystem`: Copy-paste the ENTIRE content of design-system.md (all the code, not a summary)
+- `context`: Functional/business context WITH ALL REAL DATA (labels, prices, stats, enum values, etc.)
+
+### Forbidden
+
+- Writing frontend without Gemini
+- Skipping vibes workflow when design-system.md is missing
+- Extracting "rules" instead of THE ENTIRE code
+- Manually creating design-system.md
+- Passing design info in `context` (goes in `designSystem`)
+- Summarizing design system instead of copy-pasting entirely
+- Calling Gemini without real data → leads to placeholders/fake info
+
+### Exceptions (you can code these yourself)
+
+- Text-only changes
+- JS logic without UI
+- Non-visual bug fixes
+- Data wiring (useQuery, etc.)
+
+## Claude Code Configuration
+
+- **User MCPs**: Configure in `~/.claude.json`
+- **Custom commands**: `~/.claude/commands/*.md`
+- **Custom agents**: `~/.claude/agents/*.md`
+- **Global instructions**: `~/.claude/CLAUDE.md` (this file)

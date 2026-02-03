@@ -66,11 +66,12 @@ if command -v jq &> /dev/null && [[ -f "$HOME/.claude.json" ]]; then
     # Extract mcpServers and mask API keys/sensitive URLs
     jq '{mcpServers: .mcpServers} | walk(
       if type == "string" and (
-        test("^(sk-|fc-|BS|ey)") or
+        test("^(sk-|fc-|BS|ey|tvly-)") or
         test("AIza") or
         test("^Bearer ") or
         test("Authorization:Bearer") or
-        test("srv[0-9]+\\.hstgr")
+        test("srv[0-9]+\\.hstgr") or
+        test("tavilyApiKey=")
       )
       then "YOUR_API_KEY_HERE"
       else . end
