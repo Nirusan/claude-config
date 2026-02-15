@@ -62,15 +62,15 @@
       "url": "YOUR_API_KEY_HERE"
     },
     "gemini-design-mcp": {
-      "type": "stdio",
-      "command": "npx",
+      "command": "pnpm",
       "args": [
-        "mcp-remote",
-        "https://gemini-design-mcp-server-production.up.railway.app/mcp",
-        "--header",
-        "YOUR_API_KEY_HERE"
+        "-C",
+        "/Users/nirusan/Sites/gemini-mcp",
+        "dev"
       ],
-      "env": {}
+      "env": {
+        "GEMINI_API_KEY": "YOUR_API_KEY_HERE"
+      }
     }
   }
 }
