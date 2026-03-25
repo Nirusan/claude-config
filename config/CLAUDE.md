@@ -129,6 +129,22 @@ When creating new commands, agents, or instructions, always write them in Englis
 - Non-visual bug fixes
 - Data wiring (useQuery, etc.)
 
+## Parallel Development (Worktrees)
+
+- For parallel feature work, use `claude --worktree <feature-name>` (or `-w`)
+- Each worktree gets its own branch, working directory, `node_modules`, and `.next/` — fully isolated
+- When entering a worktree for the first time on a project, if `.worktreeinclude` doesn't exist at project root, create it:
+  ```
+  .env
+  .env.local
+  .env.development.local
+  .claude/settings.local.json
+  ```
+- Run `pnpm install` after entering a new worktree
+- Push the worktree branch to trigger Vercel preview deployments
+- Scope parallel features to different files/modules to avoid merge conflicts
+- Practical limit: 3-5 parallel worktrees before human context-switching becomes the bottleneck
+
 ## Claude Code Configuration
 
 - **User MCPs**: Configure in `~/.claude.json`

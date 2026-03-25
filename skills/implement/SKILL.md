@@ -9,7 +9,7 @@ triggers:
   - "start coding"
   - "on code"
   - "développer"
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, TodoWrite, Skill, mcp__supabase__list_tables, mcp__supabase__get_advisors, mcp__supabase__execute_sql, mcp__plugin_context7_context7__resolve-library-id, mcp__plugin_context7_context7__query-docs
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, TodoWrite, Skill, Agent, mcp__supabase__list_tables, mcp__supabase__get_advisors, mcp__supabase__execute_sql, mcp__plugin_context7_context7__resolve-library-id, mcp__plugin_context7_context7__query-docs
 user-invocable: true
 args:
   - name: feature
@@ -96,8 +96,11 @@ If DB changes, check Supabase advisors (security/RLS)
 
 ## Phase 4: Code Review
 
-Invoke `/security-check` skill to analyze changes.
-Fix any critical issues identified.
+Spawn the `code-reviewer` agent as a sub-agent to review changes with fresh eyes.
+Pass the current branch name so it can diff against main.
+Fix any critical (🔴) issues it identifies before proceeding.
+
+If the changes touch auth, API routes, DB queries, user input handling, or payments, also invoke `/security-check` for a deeper audit.
 
 ## Phase 5: Update Progress
 
