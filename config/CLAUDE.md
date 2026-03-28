@@ -145,6 +145,12 @@ When creating new commands, agents, or instructions, always write them in Englis
 - Scope parallel features to different files/modules to avoid merge conflicts
 - Practical limit: 3-5 parallel worktrees before human context-switching becomes the bottleneck
 
+## Continuous Improvement
+
+- When an error or unwanted behavior occurs repeatedly (3+ times), identify the root cause and suggest updating the relevant CLAUDE.md instruction (or adding one if missing)
+- Always frame it as a clear, positive instruction ("use X") rather than a reactive patch ("don't do Y")
+- Never modify CLAUDE.md autonomously — propose the change to the user for approval
+
 ## Claude Code Configuration
 
 - **User MCPs**: Configure in `~/.claude.json`
