@@ -132,10 +132,14 @@ Définit les standards de code appliqués à tous les projets :
 
 ```json
 {
-  "model": "opus",
-  "language": "French",
+  "hooks": { "SessionStart": [...] },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+  },
   "permissions": { "allow": ["Bash(pnpm ...)"] },
-  "enabledPlugins": { "mgrep": true, "frontend-design": true, ... }
+  "enabledPlugins": { "mgrep": true, "frontend-design": true, ... },
+  "language": "French"
 }
 ```
 
@@ -145,6 +149,18 @@ Définit les standards de code appliqués à tous les projets :
 | `language` | `French` | Claude répond en français |
 | `permissions` | commandes pnpm | Auto-approve pnpm dev/build/test/etc. |
 | `enabledPlugins` | 7 plugins | Plugins activés par défaut |
+| `hooks` | SessionStart | Charge automatiquement le skill-router au démarrage |
+| `env.CLAUDE_CODE_EFFORT_LEVEL` | `max` | Effort de raisonnement maximum par défaut |
+| `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | `1` | Active la coordination multi-agents |
+
+### Hooks & Skill Router
+
+Un hook `SessionStart` injecte automatiquement le **skill-router** dans chaque session. Le skill-router :
+- Associe les tâches au bon skill via un arbre de décision
+- Invoque automatiquement les agents spécialisés (Gemini MCP, nextjs-developer, supabase-developer, seo-specialist, code-reviewer)
+- Impose la vérification navigateur après les changements frontend
+- Empêche la rationalisation pour sauter des skills
+- Exige des preuves avant de déclarer le succès
 
 ---
 
@@ -166,16 +182,26 @@ Les skills sont le format unifié de Claude Code (Dec 2025), remplaçant l'ancie
 /brainstorm → /prd → /tech-stack → /implementation-plan → /implement
 ```
 
+#### Skills de workflow dev
+
+| Skill | Triggers | Ce qu'il fait |
+|-------|----------|---------------|
+| `/tdd` | "test-driven", "écrire les tests d'abord" | Impose le cycle RED-GREEN-REFACTOR — pas de code sans test en échec |
+| `/debug` | "debug ça", "trouver la cause" | Debugging systématique en 4 phases (reproduire → analyser → hypothèse → corriger) |
+| `/dispatch` | "agents parallèles", "travailler en parallèle" | Orchestrer plusieurs sous-agents sur des tâches indépendantes |
+| `receiving-code-review` | (auto) | Comment réagir aux feedbacks de review — vérifier avant d'implémenter, pas d'accord performatif |
+| `/writing-skills` | "créer un skill" | Meta-skill pour créer de nouveaux skills dans la config |
+
 #### Skills de développement
 
 | Skill | Triggers | Ce qu'il fait |
 |-------|----------|---------------|
 | `/validate` | "valider", "lancer les tests" | Exécute `pnpm lint` → `pnpm build` → `pnpm test:e2e` en séquence |
-| `/implement` | "implémenter", "on code", "développer" | Workflow complet : lire docs → planifier → implémenter → valider → review → commit |
+| `/implement` | "implémenter", "on code", "développer" | Workflow complet : lire docs → planifier → implémenter → valider → review → commit. TDD obligatoire et protocole de blocage |
 | `/next-task` | "what's next", "c'est quoi la suite", "prochaine tâche" | Lit le plan, identifie la prochaine tâche |
 | `/refresh-context` | "on en est où", "rafraîchir le contexte" | Relit les docs projet (CLAUDE.md, progress.md) |
 | `/update-progress` | "update progress", "maj progrès" | Met à jour progress.md avec le travail complété |
-| `/git-add-commit-push` | "commit", "push", "pousser" | Stage tout, génère le message de commit, push |
+| `/git-add-commit-push` | "commit", "push", "pousser" | Stage tout, génère le message de commit, push. Options de finishing de branche (merge/PR/conserver/supprimer) |
 | `/validate-update-push` | Fin de session | Valide, met à jour le progress, commit et push |
 
 #### Skills utilitaires
@@ -240,7 +266,7 @@ Les agents sont des assistants spécialisés que Claude spawn pour des tâches s
 - `analyst` : Pose des questions pertinentes, challenge les hypothèses, crée des briefs produit
 - `product-manager` : Définit le scope MVP, écrit les user stories avec critères d'acceptance
 - `architect` : Prend des décisions tech pragmatiques, découpe les features en stories implémentables
-- `code-reviewer` : Vérifie les vulnérabilités, code smells, suggère des améliorations
+- `code-reviewer` : Review en deux étapes (conformité spec puis qualité code), vérifie les vulnérabilités, code smells, suggère des améliorations
 - `nextjs-developer` : Connaît les APIs async (`await cookies()`), patterns de data fetching
 - `supabase-developer` : Écrit les policies RLS, optimise les requêtes, gère les flows d'auth
 - `prompt-engineer` : Optimise les prompts pour génération de réponses Twitter/Reddit/LinkedIn
@@ -404,6 +430,8 @@ claude-config/
 ├── install.sh              # Installeur (--user/--project)
 ├── sync.sh                 # Sync ~/.claude/ → repo
 ├── .gitignore
+├── hooks/
+│   └── session-start.sh        # Hook SessionStart (injecte skill-router)
 ├── scripts/
 │   ├── ralph.sh            # Boucle autonome (N itérations)
 │   └── ralph-once.sh       # Tâche autonome unique
@@ -425,6 +453,12 @@ claude-config/
     ├── prd/SKILL.md              # BMAD: Besoins → prd.md
     ├── tech-stack/SKILL.md       # BMAD: Architecture → tech-stack.md
     ├── implementation-plan/SKILL.md  # BMAD: Stories → plan.md
+    ├── skill-router/SKILL.md         # Auto-chargé : associe tâches aux skills
+    ├── test-driven-development/SKILL.md  # TDD : RED-GREEN-REFACTOR
+    ├── systematic-debugging/SKILL.md     # Debugging 4 phases
+    ├── dispatch-agents/SKILL.md          # Orchestration sous-agents parallèles
+    ├── receiving-code-review/SKILL.md    # Gestion des feedbacks de review
+    ├── writing-skills/SKILL.md           # Meta-skill : créer de nouveaux skills
     ├── implement/SKILL.md
     ├── validate/SKILL.md
     ├── validate-quick/SKILL.md   # Vérification rapide pass/fail
@@ -438,7 +472,14 @@ claude-config/
     ├── validate-update-push/SKILL.md
     ├── permissions-allow/SKILL.md
     ├── design-principles/SKILL.md
-    └── sync-config/SKILL.md      # Sync config vers repo
+    ├── sync-config/SKILL.md      # Sync config vers repo
+    ├── copywriting/SKILL.md
+    ├── content-strategy/SKILL.md
+    ├── email-sequence/SKILL.md
+    ├── humanizer/SKILL.md
+    ├── launch-strategy/SKILL.md
+    ├── marketing-ideas/SKILL.md
+    └── page-cro/SKILL.md
 ```
 
 ---

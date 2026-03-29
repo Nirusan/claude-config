@@ -133,9 +133,14 @@ Defines coding standards applied to all projects:
 ```json
 {
   "model": "opus",
-  "language": "French",
+  "hooks": { "SessionStart": [...] },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+  },
   "permissions": { "allow": ["Bash(pnpm ...)"] },
-  "enabledPlugins": { "mgrep": true, "frontend-design": true, ... }
+  "enabledPlugins": { "mgrep": true, "frontend-design": true, ... },
+  "language": "French"
 }
 ```
 
@@ -145,6 +150,18 @@ Defines coding standards applied to all projects:
 | `language` | `French` | Claude responds in French |
 | `permissions` | pnpm commands | Auto-allow pnpm dev/build/test/etc. |
 | `enabledPlugins` | 7 plugins | Plugins activated by default |
+| `hooks` | SessionStart | Auto-loads skill-router at session start |
+| `env.CLAUDE_CODE_EFFORT_LEVEL` | `max` | Maximum reasoning effort by default |
+| `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | `1` | Enables multi-agent team coordination |
+
+### Hooks & Skill Router
+
+A `SessionStart` hook automatically injects the **skill-router** into every session. The skill-router:
+- Maps tasks to the right skill via a decision tree
+- Auto-invokes specialized agents (Gemini MCP, nextjs-developer, supabase-developer, seo-specialist, code-reviewer)
+- Enforces browser verification after frontend changes
+- Prevents rationalization of skipping skills
+- Requires evidence before claiming success
 
 ---
 
@@ -166,16 +183,26 @@ Skills are the unified format for Claude Code (Dec 2025), replacing the old comm
 /brainstorm → /prd → /tech-stack → /implementation-plan → /implement
 ```
 
+#### Dev Workflow Skills
+
+| Skill | Triggers | What it Does |
+|-------|----------|--------------|
+| `/tdd` | "test-driven", "write tests first" | Enforces RED-GREEN-REFACTOR cycle — no code without failing test |
+| `/debug` | "debug this", "find root cause" | Systematic 4-phase debugging (reproduce → analyze → hypothesize → fix) |
+| `/dispatch` | "parallel agents", "work in parallel" | Orchestrate multiple subagents on independent tasks |
+| `receiving-code-review` | (auto) | How to respond to review feedback — verify before implementing, no performative agreement |
+| `/writing-skills` | "create a skill" | Meta-skill for creating new skills in the config |
+
 #### Development Skills
 
 | Skill | Triggers | What it Does |
 |-------|----------|--------------|
 | `/validate` | "valider", "run tests" | Runs `pnpm lint` → `pnpm build` → `pnpm test:e2e` in sequence |
-| `/implement` | "implémenter", "on code" | Full workflow: read docs → plan → implement → validate → review → commit |
+| `/implement` | "implémenter", "on code" | Full workflow: read docs → plan → implement → validate → review → commit (mandatory TDD + blocking protocol) |
 | `/next-task` | "what's next", "c'est quoi la suite" | Reads plan, identifies next incomplete task |
 | `/refresh-context` | "on en est où", "rafraîchir le contexte" | Re-reads project docs (CLAUDE.md, progress.md) |
 | `/update-progress` | "update progress", "maj progrès" | Updates progress.md with completed work |
-| `/git-add-commit-push` | "commit", "push", "pousser" | Stages all, generates commit message, pushes |
+| `/git-add-commit-push` | "commit", "push", "pousser" | Stages all, generates commit message, pushes (branch finishing: merge/PR/keep/discard) |
 | `/validate-update-push` | End of session | Validates, updates progress, commits and pushes |
 
 #### Utility Skills
@@ -230,7 +257,7 @@ Agents are specialized assistants that Claude spawns for specific tasks. They're
 
 | Agent | Model | Expertise | Triggered When |
 |-------|-------|-----------|----------------|
-| `code-reviewer` | inherit | Code quality, security, best practices | After code changes, during `/implement` |
+| `code-reviewer` | inherit | Code quality, security, best practices (two-stage review: spec compliance then code quality) | After code changes, during `/implement` |
 | `nextjs-developer` | inherit | Next.js 14+, App Router, RSC, Server Actions | Working on Next.js code |
 | `supabase-developer` | inherit | PostgreSQL, Auth, RLS policies | Database queries, auth issues |
 | `prompt-engineer` | inherit | Claude API prompts, context extraction | Writing AI suggestion prompts |
@@ -405,6 +432,8 @@ claude-config/
 ├── install.sh              # Installer (--user/--project)
 ├── sync.sh                 # Sync ~/.claude/ → repo
 ├── .gitignore
+├── hooks/
+│   └── session-start.sh        # SessionStart hook (injects skill-router)
 ├── scripts/
 │   ├── ralph.sh            # Autonomous loop (N iterations)
 │   └── ralph-once.sh       # Autonomous single task
@@ -422,10 +451,16 @@ claude-config/
 │   ├── prompt-engineer.md  # Prompt optimization
 │   └── seo-specialist.md   # SEO optimization expert
 └── skills/                 # Unified format (Dec 2025)
+    ├── skill-router/SKILL.md         # Auto-loaded: maps tasks to skills
     ├── brainstorm/SKILL.md       # BMAD: Ideation → brief.md
     ├── prd/SKILL.md              # BMAD: Requirements → prd.md
     ├── tech-stack/SKILL.md       # BMAD: Architecture → tech-stack.md
     ├── implementation-plan/SKILL.md  # BMAD: Stories → plan.md
+    ├── test-driven-development/SKILL.md  # TDD: RED-GREEN-REFACTOR
+    ├── systematic-debugging/SKILL.md     # 4-phase debugging
+    ├── dispatch-agents/SKILL.md          # Parallel subagent orchestration
+    ├── receiving-code-review/SKILL.md    # Review feedback handling
+    ├── writing-skills/SKILL.md           # Meta-skill: create new skills
     ├── implement/SKILL.md
     ├── validate/SKILL.md
     ├── validate-quick/SKILL.md   # Quick pass/fail check
@@ -439,7 +474,14 @@ claude-config/
     ├── validate-update-push/SKILL.md
     ├── permissions-allow/SKILL.md
     ├── design-principles/SKILL.md
-    └── sync-config/SKILL.md      # Sync config to repo
+    ├── sync-config/SKILL.md      # Sync config to repo
+    ├── copywriting/SKILL.md
+    ├── content-strategy/SKILL.md
+    ├── email-sequence/SKILL.md
+    ├── humanizer/SKILL.md
+    ├── launch-strategy/SKILL.md
+    ├── marketing-ideas/SKILL.md
+    └── page-cro/SKILL.md
 ```
 
 ---
