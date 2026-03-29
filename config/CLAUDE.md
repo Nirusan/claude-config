@@ -83,7 +83,7 @@ When creating new commands, agents, or instructions, always write them in Englis
 
 ## MCP Gemini Design - MANDATORY WORKFLOW
 
-**ABSOLUTE RULE**: You NEVER write frontend/UI code yourself. Gemini is your frontend developer.
+**DEFAULT RULE**: Gemini is your frontend developer for pages, sections, and complex components.
 
 ### Available Tools
 
@@ -128,6 +128,7 @@ When creating new commands, agents, or instructions, always write them in Englis
 - JS logic without UI
 - Non-visual bug fixes
 - Data wiring (useQuery, etc.)
+- Minor UI tweaks on existing components (guided by **frontend-design** plugin)
 
 ## Parallel Development (Worktrees)
 
