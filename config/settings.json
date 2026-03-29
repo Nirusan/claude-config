@@ -48,6 +48,9 @@
     "code-simplifier@claude-plugins-official": true,
     "stripe@claude-plugins-official": true
   },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "language": "French",
   "skipDangerousModePermissionPrompt": true
 }
