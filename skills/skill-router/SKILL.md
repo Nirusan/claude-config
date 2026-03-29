@@ -77,11 +77,17 @@ These agents and tools MUST be used automatically when working in their domain. 
 
 **Pre-check:** Verify `design-system.md` exists at project root. If missing, run `generate_vibes` first (required for both approaches).
 
-**Post-check (visual verification):** After any frontend change, verify the result in the browser before committing:
+**Post-check (browser verification):** After any frontend change, verify the result in the browser before committing:
 1. Ensure `pnpm dev` is running
 2. Navigate to the affected page via **chrome-devtools** (`navigate_page`)
 3. Take a snapshot (`take_snapshot`) and verify the result visually
-4. If something looks off, fix it and re-check — do not commit broken UI
+4. **Test interactions** via **claude-in-chrome** when the change involves behavior:
+   - Forms: fill inputs (`form_input`), submit, verify validation and success states
+   - Buttons/CTAs: click and verify expected outcome
+   - Navigation: test links, routing, redirects
+   - Console: check for errors (`read_console_messages`)
+   - Network: verify API calls succeed (`read_network_requests`)
+5. If something looks off or fails, fix it and re-check — do not commit broken UI or behavior
 
 ### Next.js / React Code
 **When:** Working on App Router, Server Components, Server Actions, API routes, or any Next.js-specific code.
