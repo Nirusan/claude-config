@@ -77,6 +77,12 @@ These agents and tools MUST be used automatically when working in their domain. 
 
 **Pre-check:** Verify `design-system.md` exists at project root. If missing, run `generate_vibes` first (required for both approaches).
 
+**Post-check (visual verification):** After any frontend change, verify the result in the browser before committing:
+1. Ensure `pnpm dev` is running
+2. Navigate to the affected page via **chrome-devtools** (`navigate_page`)
+3. Take a snapshot (`take_snapshot`) and verify the result visually
+4. If something looks off, fix it and re-check — do not commit broken UI
+
 ### Next.js / React Code
 **When:** Working on App Router, Server Components, Server Actions, API routes, or any Next.js-specific code.
 **Action:** Spawn the **nextjs-developer** agent for implementation guidance on async APIs, data fetching patterns, caching strategies, and performance best practices.
