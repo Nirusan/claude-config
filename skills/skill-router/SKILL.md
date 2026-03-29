@@ -65,6 +65,31 @@ User request
     └── Proceed normally
 ```
 
+## Auto-Invoke Agents (no manual trigger needed)
+
+These agents and tools MUST be used automatically when working in their domain. Do not wait for the user to ask.
+
+### Frontend / UI Work
+**When:** Creating or modifying any visual component, page, or layout.
+**Action:** Use the **Gemini MCP** tools (`create_frontend`, `modify_frontend`, `snippet_frontend`) as defined in CLAUDE.md. Never write frontend/UI code yourself.
+**Pre-check:** Verify `design-system.md` exists at project root. If missing, run `generate_vibes` first.
+
+### Next.js / React Code
+**When:** Working on App Router, Server Components, Server Actions, API routes, or any Next.js-specific code.
+**Action:** Spawn the **nextjs-developer** agent for implementation guidance on async APIs, data fetching patterns, caching strategies, and performance best practices.
+
+### Supabase / Database
+**When:** Writing queries, creating migrations, setting up auth, or configuring RLS policies.
+**Action:** Spawn the **supabase-developer** agent for correct client initialization (server vs client), RLS patterns, and query optimization.
+
+### SEO-Sensitive Changes
+**When:** Creating or modifying user-facing pages, changing routes, updating metadata, or adding images.
+**Action:** Spawn the **seo-specialist** agent to audit the changes (metadata, headings, structured data, Core Web Vitals).
+
+### Code Review (post-implementation)
+**When:** After completing any implementation task (story, feature, bug fix).
+**Action:** Spawn the **code-reviewer** agent with fresh eyes on the diff. This is already part of `/implement` Phase 4 but applies to all code changes, not just plan-based work.
+
 ## Key Rules
 
 1. **Process skills first** — brainstorm, debug, tdd come BEFORE implementation
