@@ -60,6 +60,18 @@ if [[ -d "$CLAUDE_DIR/skills" ]]; then
     done
 fi
 
+# Sync hooks
+if [[ -d "$CLAUDE_DIR/hooks" ]]; then
+    mkdir -p "$SCRIPT_DIR/hooks"
+    for file in "$CLAUDE_DIR/hooks"/*; do
+        if [[ -f "$file" ]]; then
+            filename=$(basename "$file")
+            cp "$file" "$SCRIPT_DIR/hooks/$filename"
+            echo "    ✓ hooks/$filename"
+        fi
+    done
+fi
+
 # Sync MCP servers config (mask API keys)
 echo "==> Syncing MCP servers template..."
 if command -v jq &> /dev/null && [[ -f "$HOME/.claude.json" ]]; then

@@ -241,10 +241,20 @@ SKILLS=(
     "validate"
     "validate-quick"
     "validate-update-push"
+    "test-driven-development"
+    "systematic-debugging"
+    "dispatch-agents"
+    "skill-router"
 )
 for skill in "${SKILLS[@]}"; do
     install_skill "$skill"
 done
+
+# Install hooks
+echo "==> Installing hooks..."
+mkdir -p "$CLAUDE_DIR/hooks"
+install_file "hooks/session-start.sh" "$CLAUDE_DIR/hooks/session-start.sh"
+chmod +x "$CLAUDE_DIR/hooks/session-start.sh"
 
 # Install agents
 echo "==> Installing agents..."
@@ -325,8 +335,9 @@ else
 fi
 echo ""
 echo "Also installed:"
-echo "  - 17 skills (/validate, /implement, /prd, /brainstorm, etc.)"
+echo "  - 21 skills (/validate, /implement, /prd, /brainstorm, /tdd, /debug, etc.)"
 echo "  - 7 custom agents (analyst, architect, product-manager, ...)"
+echo "  - SessionStart hook (auto-loads skill-router)"
 echo "  - MCP servers template (merged into ~/.claude.json)"
 echo ""
 echo "Skills are the unified format replacing commands (Claude Code Dec 2025)."
