@@ -101,6 +101,15 @@ These agents and tools MUST be used automatically when working in their domain. 
 **When:** Creating or modifying user-facing pages, changing routes, updating metadata, or adding images.
 **Action:** Spawn the **seo-specialist** agent to audit the changes (metadata, headings, structured data, Core Web Vitals).
 
+### Browser E2E Verification (user-facing flows)
+**When:** A user-facing flow is created or modified — auth, checkout, onboarding, multi-step forms, or backend changes that affect visible behavior (new routes, validation changes, redirects).
+**Skip when:** Automated tests already cover the flow, or the change is internal with no visible impact (refactoring, query optimization).
+**Action:** Via **claude-in-chrome**, walk through the flow as a user would:
+1. Navigate to the entry point
+2. Complete the flow (fill forms, click CTAs, follow redirects)
+3. Verify the end state is correct
+4. Check console (`read_console_messages`) and network (`read_network_requests`) for errors
+
 ### Code Review (post-implementation)
 **When:** After completing any implementation task (story, feature, bug fix).
 **Action:** Spawn the **code-reviewer** agent with fresh eyes on the diff. This is already part of `/implement` Phase 4 but applies to all code changes, not just plan-based work.
