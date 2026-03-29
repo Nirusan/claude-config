@@ -95,6 +95,53 @@ When this skill is invoked:
    3. Keep stories small (completable in one session)
    4. Include specific tasks and acceptance criteria per story
    5. Add technical notes to help the implementer
+   6. Map ALL files that will be created or modified before listing tasks
+   7. Ensure every task meets the granularity guidelines below
+   8. Self-review the plan before presenting it
+
+   ## Task Granularity
+
+   Each task in the plan should take **2-5 minutes** to implement. If a task feels bigger, break it down further.
+
+   ### What a good task looks like:
+   - One clear action: "Write test for email validation" or "Add validateEmail function"
+   - Specific files mentioned: "Create `lib/validators.ts`"
+   - Expected outcome clear: "Test should fail because validateEmail doesn't exist yet"
+   - Follows TDD: test → verify fail → implement → verify pass → commit
+
+   ### What a bad task looks like:
+   - "Implement user authentication" (too vague, too large)
+   - "Handle edge cases" (which edge cases?)
+   - "Add validation" (what validation? where? what rules?)
+
+   ### Red flags in plans — fix before proceeding:
+   - Vague instructions without specific files or code
+   - References to undefined functions or types
+   - Steps that describe intent without showing what to do
+   - Tasks that would take more than 10 minutes
+
+   ## File Mapping
+
+   Before listing tasks, document ALL files that will be created or modified:
+
+   | File | Action | Responsibility |
+   |------|--------|---------------|
+   | `lib/validators.ts` | Create | Email and form validation functions |
+   | `tests/validators.test.ts` | Create | Tests for all validators |
+   | `app/auth/page.tsx` | Modify | Add email validation to signup form |
+
+   This prevents surprises during implementation and helps `/dispatch` identify independent work.
+
+   ## Plan Self-Review
+
+   Before presenting the plan to the user, check:
+   1. **Spec coverage**: Can every requirement from the PRD map to at least one task?
+   2. **Placeholder scan**: Any "TBD", "TODO", or vague descriptions? Replace with specifics
+   3. **Dependency order**: Are tasks ordered so each can be implemented without forward references?
+   4. **Type consistency**: Do function/variable names match across tasks?
+   5. **File mapping complete**: Is every file that will be touched listed?
+
+   Fix issues inline before presenting.
 
    Create TWO files:
    1. {plan_file} - The implementation plan
@@ -131,6 +178,12 @@ memory-bank/
 
 ## Prerequisites
 - {Any setup needed before starting}
+
+## File Map
+
+| File | Action | Responsibility |
+|------|--------|---------------|
+| `path/to/file.ts` | Create/Modify | {What this file does or what changes} |
 
 ## Stories
 

@@ -39,3 +39,25 @@ user-invocable: true
 - End with: `Co-Authored-By: Claude <noreply@anthropic.com>`
 
 Run commands sequentially and confirm the result.
+
+## Finishing a Development Branch
+
+When all stories in a plan are completed and validated, present exactly these 4 options:
+
+### Options
+1. **Merge back to main locally** — `git checkout main && git pull && git merge {branch} && git branch -d {branch}`
+2. **Push and create a Pull Request** — push branch, then suggest creating PR
+3. **Keep the branch as-is** — no cleanup, branch stays for later
+4. **Discard this work** — requires explicit confirmation ("discard") before deleting
+
+### Process
+1. Run `pnpm test` (or equivalent) — stop if tests fail
+2. Identify the base branch: `git merge-base --fork-point main HEAD` (or `master`)
+3. Present the 4 options above
+4. Execute the chosen option
+5. Clean up worktree if applicable (Options 1, 2, 4)
+
+### Safety
+- Never merge with failing tests
+- Never discard without explicit typed confirmation
+- Never force-push without explicit user request

@@ -71,17 +71,21 @@ args:
 3. Mark todos as completed as you go
 4. If you need library documentation, use Context7
 
-## Phase 2.5: Tests (if relevant)
+## Phase 2.5: Tests (TDD)
 
-If the story adds new user-facing functionality:
-1. Create/update tests in `tests/` or alongside components
-2. Follow existing patterns
-3. Use data-testid attributes for E2E selectors
+Follow the `/tdd` skill for all new functionality:
+1. **RED**: Write a failing test for the behavior you're about to implement
+2. **Verify RED**: Run `pnpm test` — confirm the test fails for the right reason
+3. **GREEN**: Write minimal code to pass the test
+4. **Verify GREEN**: Run `pnpm test` — confirm all tests pass
 
-**Skip if:**
-- Minor fix (typo, style, refactor)
-- Internal change with no UI impact
-- Existing tests already cover the case
+**Skip TDD only for:**
+- Text-only changes (copy, translations)
+- Pure config changes (env vars, tailwind config)
+- Style-only changes (CSS, spacing, colors)
+- Deleting unused code
+
+These are the same exceptions as the `/tdd` skill.
 
 ## Phase 3: Validate
 
@@ -120,6 +124,28 @@ Story: #{story_number} from {feature_name or 'main'} plan
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
+
+## Handling Blockers
+
+When blocked during implementation, follow this protocol:
+
+### Status: DONE
+Proceed to Phase 3 (Validate).
+
+### Status: DONE_WITH_CONCERNS
+Note concerns in the commit message. Proceed to validation but flag concerns to the user after commit.
+
+### Status: NEEDS_CONTEXT
+Stop implementation. Ask the user for the missing information. Do NOT guess or assume. Resume only after receiving the answer.
+
+### Status: BLOCKED
+Assess the blocker type and respond:
+- **Missing dependency/API**: Ask user how to proceed
+- **Unclear requirement**: Go back to the plan, re-read the story. If still unclear, ask user
+- **Test failure you can't resolve**: Use `/debug` to investigate systematically
+- **Architectural issue**: Escalate to user — this may require plan revision
+
+Never force through a blocker. Never skip a story because it's hard.
 
 ## Rules
 

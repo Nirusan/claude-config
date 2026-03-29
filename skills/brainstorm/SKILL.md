@@ -19,12 +19,22 @@ context: fork
 
 Interactive ideation and product discovery session. Outputs a structured product brief.
 
+## Hard Gate
+
+Do NOT write any code, scaffold any project, or take any implementation action until:
+1. A design has been presented to the user
+2. The user has explicitly approved the design
+3. A design doc has been written and committed
+
+This applies to EVERY project regardless of perceived simplicity. "Simple" projects are where unexamined assumptions cause the most waste.
+
 ## Behavior
 
 1. **Spawn the Analyst agent** to conduct the brainstorming session
 2. Agent asks targeted questions about the problem, users, and opportunity
-3. User and agent iterate until user says "generate", "create the brief", or similar
-4. Create `memory-bank/brief.md`
+3. **Scope detection**: If the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Help decompose into sub-projects before brainstorming the first one in detail.
+4. User and agent iterate until user says "generate", "create the brief", or similar
+5. Create `memory-bank/brief.md`
 
 ## Instructions
 
@@ -61,6 +71,13 @@ When this skill is invoked:
 3. **Let the agent run** the interactive session
 
 4. **Output**: `memory-bank/brief.md`
+
+## Design Doc
+
+After the user approves the design:
+1. Save the validated design to `memory-bank/brief.md` (already done)
+2. Commit the design doc to git: `git add memory-bank/brief.md && git commit -m "docs: add product brief for {name}"`
+3. This ensures the design is versioned and recoverable
 
 ## Output Location
 
@@ -100,6 +117,23 @@ The agent should create a brief following this structure:
 ## Out of Scope
 {What this is NOT trying to solve}
 ```
+
+## Spec Self-Review
+
+Before presenting the brief to the user, review it with fresh eyes:
+1. **Placeholder scan**: Any "TBD", "TODO", or vague requirements? Fix them
+2. **Internal consistency**: Do sections contradict each other?
+3. **Scope check**: Is this focused enough for a single implementation plan?
+4. **Ambiguity check**: Could any requirement be interpreted two different ways? Pick one and make it explicit
+
+Fix issues inline, then present to the user.
+
+## User Review Gate
+
+After writing the brief, explicitly ask the user to review:
+> "Brief written and committed. Please review it and let me know if you want changes before we move to the PRD or implementation plan."
+
+Wait for the user's response. Only proceed once approved.
 
 ## Next Step
 

@@ -31,6 +31,9 @@ User request
 ├── Bug or issue to fix?
 │   └── /debug (systematic 4-phase investigation)
 │
+├── Received review feedback (PR comments, CI feedback)?
+│   └── receiving-code-review (verify before implementing, no performative agreement)
+│
 ├── Writing new functionality?
 │   └── /tdd (RED-GREEN-REFACTOR, tests first)
 │
@@ -122,6 +125,22 @@ These agents and tools MUST be used automatically when working in their domain. 
 4. **Debug before guessing** — if a bug is unclear, use /debug instead of trial-and-error
 5. **Validate before committing** — always run /validate or /validate-quick before commit
 6. **Security check on sensitive code** — auth, payments, user input, API routes, DB queries
+7. **Evidence before claims** — never say "it should work", "that looks correct", or "I believe this is fixed" without running the actual verification command first. Run the command, read the output, then state the result with evidence
+
+## Do Not Rationalize Skipping Skills
+
+If you catch yourself thinking any of these, STOP — you are rationalizing:
+
+- "This is too simple to need a skill"
+- "I already know how to do this"
+- "The user just wants a quick answer"
+- "I'll use the skill next time"
+- "This doesn't really count as [brainstorming/debugging/etc.]"
+- "I need more context before using a skill"
+- "The skill would slow things down"
+- "This is just a small fix"
+
+Every one of these thoughts is a signal that you SHOULD use the skill. Simple tasks are where unexamined assumptions cause the most wasted work.
 
 ## Skill Quick Reference
 
@@ -145,4 +164,6 @@ These agents and tools MUST be used automatically when working in their domain. 
 | validate-update-push | `/validate-update-push` | Validate + update docs + push |
 | update-progress | `/update-progress` | Update progress file |
 | update-docs | `/update-docs` | Update documentation |
+| receiving-code-review | (auto) | When receiving PR comments, review feedback, or CI results |
+| writing-skills | `/writing-skills` | Create a new skill for the config |
 | refresh-context | `/refresh-context` | Reload project context |

@@ -241,6 +241,7 @@ SKILLS=(
     "page-cro"
     "permissions-allow"
     "prd"
+    "receiving-code-review"
     "refresh-context"
     "security-check"
     "seo-check"
@@ -253,6 +254,7 @@ SKILLS=(
     "validate"
     "validate-quick"
     "validate-update-push"
+    "writing-skills"
 )
 for skill in "${SKILLS[@]}"; do
     install_skill "$skill"
@@ -343,7 +345,7 @@ else
 fi
 echo ""
 echo "Also installed:"
-echo "  - 29 skills (/validate, /implement, /prd, /brainstorm, /tdd, /debug, etc.)"
+echo "  - 31 skills (/validate, /implement, /prd, /brainstorm, /tdd, /debug, etc.)"
 echo "  - 7 custom agents (analyst, architect, product-manager, ...)"
 echo "  - SessionStart hook (auto-loads skill-router)"
 echo "  - MCP servers template (merged into ~/.claude.json)"
