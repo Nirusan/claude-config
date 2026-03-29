@@ -71,8 +71,11 @@ These agents and tools MUST be used automatically when working in their domain. 
 
 ### Frontend / UI Work
 **When:** Creating or modifying any visual component, page, or layout.
-**Action:** Use the **Gemini MCP** tools (`create_frontend`, `modify_frontend`, `snippet_frontend`) as defined in CLAUDE.md. Never write frontend/UI code yourself.
-**Pre-check:** Verify `design-system.md` exists at project root. If missing, run `generate_vibes` first.
+**Action — choose based on scope:**
+- **Gemini MCP** (default for significant UI work): Use `create_frontend`, `modify_frontend`, `snippet_frontend` as defined in CLAUDE.md. Never write frontend/UI code yourself for full pages, sections, or complex components.
+- **frontend-design plugin** (small scope): For minor UI tweaks, small isolated components, or when Gemini MCP is unavailable. Claude writes the code itself, guided by the plugin's aesthetic principles.
+
+**Pre-check:** Verify `design-system.md` exists at project root. If missing, run `generate_vibes` first (required for both approaches).
 
 ### Next.js / React Code
 **When:** Working on App Router, Server Components, Server Actions, API routes, or any Next.js-specific code.
