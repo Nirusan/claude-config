@@ -1,5 +1,40 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+  },
+  "effortLevel": "high",
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "mgrep@Mixedbread-Grep": true,
+    "security-guidance@claude-plugins-official": true,
+    "stripe@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
   "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "/bin/sh \"${HOME}/Library/Application Support/Taphaptic/bin/taphaptic-hook\" permission_prompt",
+            "type": "command"
+          }
+        ],
+        "matcher": "permission_prompt"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/bin/sh \"${HOME}/Library/Application Support/Taphaptic/bin/taphaptic-hook\" idle_prompt",
+            "type": "command"
+          }
+        ],
+        "matcher": "idle_prompt"
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "startup|clear|compact",
@@ -10,8 +45,31 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "/bin/sh \"${HOME}/Library/Application Support/Taphaptic/bin/taphaptic-hook\" stop",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "command": "/bin/sh \"${HOME}/Library/Application Support/Taphaptic/bin/taphaptic-hook\" subagent_stop",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
     ]
   },
+  "language": "French",
   "permissions": {
     "allow": [
       "Bash(lhci:*)",
@@ -38,20 +96,5 @@
       "Bash(pnpm start)"
     ]
   },
-  "enabledPlugins": {
-    "mgrep@Mixedbread-Grep": true,
-    "frontend-design@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "stripe@claude-plugins-official": true
-  },
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_EFFORT_LEVEL": "max"
-  },
-  "language": "French",
   "skipDangerousModePermissionPrompt": true
 }
