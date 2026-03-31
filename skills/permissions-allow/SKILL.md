@@ -88,7 +88,7 @@ Create `.claude/` directory if needed, then write `settings.local.json` with:
 - **Search**: Brave Search, Exa
 - **Firecrawl**: Web scraping, crawling, extraction, agent
 - **Claude-in-Chrome**: Browser automation, screenshots, form filling, navigation
-- **Chrome DevTools**: Page navigation, snapshots
+- **dev-browser**: Headless browser automation via Playwright (sandboxed scripts)
 - **Supabase**: All read operations + project/branch management
 - **Bash commands**: pnpm, npm, node, git, docker, curl, and many more utilities
 
