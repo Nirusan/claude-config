@@ -31,14 +31,6 @@
       "url": "https://mcp.exa.ai/mcp",
       "headers": {}
     },
-    "chrome-devtools": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "chrome-devtools-mcp@latest"
-      ],
-      "env": {}
-    },
     "n8n-mcp": {
       "type": "stdio",
       "command": "npx",

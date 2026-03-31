@@ -51,7 +51,7 @@ Create `.claude/` directory if needed, then write `settings.local.json` with:
       "mcp__supabase__list_branches", "mcp__supabase__merge_branch",
       "mcp__supabase__reset_branch", "mcp__supabase__rebase_branch",
       "mcp__exa__web_search_exa",
-      "mcp__chrome-devtools__navigate_page", "mcp__chrome-devtools__take_snapshot",
+      "Bash(dev-browser:*)",
       "Bash(pnpm:*)", "Bash(npm:*)", "Bash(node:*)", "Bash(npx:*)",
       "Bash(git:*)", "Bash(gh:*)", "Bash(docker:*)",
       "Bash(cat:*)", "Bash(ls:*)", "Bash(pwd:*)", "Bash(cd:*)", "Bash(mkdir:*)",

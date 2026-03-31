@@ -302,7 +302,7 @@ Les serveurs MCP (Model Context Protocol) étendent Claude Code avec des intégr
 | `supabase` | Gestion de base de données | OAuth (pas de clé nécessaire) |
 | `exa` | Recherche web IA | OAuth (pas de clé nécessaire) |
 | `context7` | Documentation des librairies | Aucune (gratuit) |
-| `chrome-devtools` | Automatisation navigateur | Aucune (local) |
+| `dev-browser` | Automatisation navigateur (Playwright sandboxé) | Aucune (`npm i -g dev-browser`) |
 | `gemini-design-mcp` | Design avec Gemini | Clé API |
 | `n8n-mcp` | Automatisation de workflows | Clé API + URL |
 

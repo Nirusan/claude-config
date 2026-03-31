@@ -303,7 +303,7 @@ MCP (Model Context Protocol) servers extend Claude Code with external service in
 | `supabase` | Database management | OAuth (no key needed) |
 | `exa` | AI-powered web search | OAuth (no key needed) |
 | `context7` | Library documentation | None (free) |
-| `chrome-devtools` | Browser automation | None (local) |
+| `dev-browser` | Browser automation (sandboxed Playwright) | None (`npm i -g dev-browser`) |
 | `gemini-design-mcp` | Design with Gemini | API Key |
 | `n8n-mcp` | Workflow automation | API Key + URL |
 

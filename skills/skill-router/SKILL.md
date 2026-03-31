@@ -82,14 +82,21 @@ These agents and tools MUST be used automatically when working in their domain. 
 
 **Post-check (browser verification):** After any frontend change, verify the result in the browser before committing:
 1. Ensure `pnpm dev` is running
-2. Navigate to the affected page via **chrome-devtools** (`navigate_page`)
-3. Take a snapshot (`take_snapshot`) and verify the result visually
-4. **Test interactions** via **claude-in-chrome** when the change involves behavior:
-   - Forms: fill inputs (`form_input`), submit, verify validation and success states
-   - Buttons/CTAs: click and verify expected outcome
+2. Navigate and take a snapshot via **dev-browser**:
+   ```bash
+   dev-browser <<'EOF'
+   const page = await browser.getPage("verify");
+   await page.goto("http://localhost:3000/affected-page");
+   const snapshot = await page.snapshotForAI();
+   console.log(snapshot);
+   EOF
+   ```
+3. **Test interactions** via **dev-browser** when the change involves behavior:
+   - Forms: fill inputs (`page.fill`), submit, verify states
+   - Buttons/CTAs: click (`page.click`) and verify expected outcome
    - Navigation: test links, routing, redirects
-   - Console: check for errors (`read_console_messages`)
-   - Network: verify API calls succeed (`read_network_requests`)
+   - Console: check for errors via `page.evaluate`
+4. For complex interactions on your **real browser** (logged-in sessions, cookies), use **claude-in-chrome** instead
 5. If something looks off or fails, fix it and re-check — do not commit broken UI or behavior
 
 ### Next.js / React Code
