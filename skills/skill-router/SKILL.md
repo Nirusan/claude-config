@@ -13,6 +13,9 @@ Before starting any task, check if a skill applies. If one does, invoke it. This
 ```
 User request
 │
+├── Fuzzy requirements, new domain, or unsure what to ask?
+│   └── /find-unknowns (blindspot pass, interview, prototype, quiz)
+│
 ├── Wants to build something new?
 │   └── /brainstorm → /implementation-plan → /implement
 │
@@ -153,6 +156,7 @@ Every one of these thoughts is a signal that you SHOULD use the skill. Simple ta
 
 | Skill | Trigger | When |
 |-------|---------|------|
+| find-unknowns | `/find-unknowns` | Surface blindspots and ambiguities before/during/after work |
 | brainstorm | `/brainstorm` | New feature or idea to explore |
 | prd | `/prd` | Define product requirements |
 | tech-stack | `/tech-stack` | Define or review technical stack |

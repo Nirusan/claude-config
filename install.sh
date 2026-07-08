@@ -231,6 +231,7 @@ SKILLS=(
     "design-principles"
     "dispatch-agents"
     "email-sequence"
+    "find-unknowns"
     "git-add-commit-push"
     "humanizer"
     "implement"
