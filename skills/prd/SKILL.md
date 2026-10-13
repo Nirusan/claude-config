@@ -15,6 +15,7 @@ args:
   - name: feature
     description: Feature name for feature-specific PRD (creates in features/{name}/)
     required: false
+disable-model-invocation: true
 ---
 
 # PRD Skill

@@ -1,7 +1,7 @@
 ---
 name: validate-quick
-description: Quick validation check returning pass/fail. Use AUTOMATICALLY before any git commit, before pushing code, when user asks "is it ready?", "can we commit?", "does it build?", "c'est prêt?", "on peut commit?", "ça build?", or wants a quick health check. Runs silently in background.
-allowed-tools: Bash(pnpm:*), Read
+description: Quick pass/fail run of the project's own gate (typecheck, lint, unit tests from package.json). Use before a commit or push, or when the user asks "is it ready?", "can we commit?", "c'est prêt ?", "on peut commit ?".
+allowed-tools: Bash(pnpm:*), Bash(corepack:*), Bash(npx:*), Read
 context: fork
 agent: general-purpose
 user-invocable: true
@@ -9,42 +9,33 @@ user-invocable: true
 
 # Quick Validation Check
 
-Run available validation scripts and return a simple pass/fail result.
+Run the project's gate and return a short pass/fail summary.
 
 ## Process
 
-1. Check `package.json` for available scripts
-2. Run each available script silently
-3. Return summary only
+1. Read the project instructions (AGENTS.md, CLAUDE.md). If they define a pre-commit gate, run exactly that gate.
+2. Otherwise read the `package.json` scripts and run, in order, whichever exist:
+   - `typecheck`, or `tsc --noEmit` when there is no such script but a `tsconfig.json` exists;
+   - `lint`;
+   - `test` (unit tests).
+   Run `build` only when the project has no typecheck at all (for example a web app whose build is its type check). Never run E2E or device suites here.
+3. Use the repository-pinned package manager (`corepack pnpm …` when `packageManager` pins pnpm).
+4. A missing step is reported as "not configured", never as OK.
 
-## Scripts to Check
+## Output
 
-Run in order, skip if not configured:
-- `pnpm lint`
-- `pnpm build`
-- `pnpm test:e2e` or `pnpm test`
-
-## Output Format
-
-**All pass:**
 ```
 ✅ Validation passed
+- Typecheck: OK
 - Lint: OK
-- Build: OK
-- Tests: OK
+- Tests: OK (N passed)
 ```
 
-**Some fail:**
 ```
 ❌ Validation failed
+- Typecheck: FAILED
 - Lint: OK
-- Build: FAILED
-- Tests: Skipped
+- Tests: not configured
 ```
 
-## Rules
-
-- No detailed error output (use `/validate` for that)
-- No offer to fix (use `/validate` for that)
-- Just run and report pass/fail
-- Fast and non-interactive
+No detailed errors and no fixes: name the failing step and stop.

@@ -14,6 +14,7 @@ args:
   - name: feature
     description: Feature name to check (reads from memory-bank/features/{name}/)
     required: false
+disable-model-invocation: true
 ---
 
 # Identify Next Task

@@ -3,6 +3,7 @@ name: validate-update-push
 description: Complete workflow to validate build, update documentation, update progress, and push changes. Use when finalizing work, before ending a session, or when the user says "finalize", "wrap up", or "ship it".
 allowed-tools: Bash, Read, Write, Edit, Glob, Skill
 user-invocable: true
+disable-model-invocation: true
 ---
 
 # Validate, Update & Push

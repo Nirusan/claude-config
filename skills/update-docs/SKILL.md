@@ -3,6 +3,7 @@ name: update-docs
 description: Intelligently update project documentation (CLAUDE.md, memory-bank/) based on recent changes. Use after implementing features, establishing new patterns, or when documentation needs to reflect current state.
 allowed-tools: Read, Write, Edit, Glob
 user-invocable: true
+disable-model-invocation: true
 ---
 
 # Update Project Documentation

@@ -12,6 +12,7 @@ triggers:
   - "quel est l'état actuel"
 allowed-tools: Read, Glob
 user-invocable: true
+disable-model-invocation: true
 ---
 
 # Refresh Project Context

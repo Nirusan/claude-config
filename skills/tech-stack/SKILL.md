@@ -11,6 +11,7 @@ triggers:
   - "discussion architecture"
 tools: Read, Write, Grep, Glob, Bash, Task
 context: fork
+disable-model-invocation: true
 ---
 
 # Tech Stack Skill

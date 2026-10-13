@@ -13,6 +13,7 @@ triggers:
   - "aide-moi à réfléchir"
 tools: Read, Write, WebSearch, WebFetch, Grep, Glob, Task
 context: fork
+disable-model-invocation: true
 ---
 
 # Brainstorm Skill

@@ -13,6 +13,7 @@ args:
   - name: feature
     description: Feature name to update (updates memory-bank/features/{name}/progress.md)
     required: false
+disable-model-invocation: true
 ---
 
 # Update Progress Files

@@ -2,6 +2,7 @@
 name: skill-router
 description: Automatically loaded at session start. Maps tasks to the right skill. Do not invoke manually.
 user-invocable: false
+disable-model-invocation: true
 ---
 
 # Skill Router

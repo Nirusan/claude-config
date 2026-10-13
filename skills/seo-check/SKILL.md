@@ -2,6 +2,7 @@
 name: seo-check
 description: SEO audit and optimization review. Use automatically when working on pages, metadata, content, images, or any user-facing features. Also use before commits that add new pages or modify existing content.
 argument-hint: [page/feature path or blank for staged changes]
+disable-model-invocation: true
 ---
 
 ## SEO Check - Optimization Audit

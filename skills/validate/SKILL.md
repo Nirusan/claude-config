@@ -10,6 +10,7 @@ triggers:
   - "vérifier le build"
 allowed-tools: Bash(pnpm:*), Bash(grep:*), Bash(cat:*), Read
 user-invocable: true
+disable-model-invocation: true
 ---
 
 # Full Project Validation

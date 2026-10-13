@@ -63,6 +63,13 @@
       "env": {
         "GEMINI_API_KEY": "YOUR_API_KEY_HERE"
       }
+    },
+    "appkittie": {
+      "type": "http",
+      "url": "https://mcp.appkittie.com",
+      "headers": {
+        "Authorization": "YOUR_API_KEY_HERE"
+      }
     }
   }
 }

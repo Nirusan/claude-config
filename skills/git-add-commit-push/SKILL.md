@@ -1,63 +1,43 @@
 ---
 name: git-add-commit-push
-description: Stage all changes, create a commit with auto-generated or custom message, and push to current branch. Use when the user says "commit", "push", "save changes", or wants to finalize their work.
-triggers:
-  - "/commit"
-  - "/push"
-  - "commit"
-  - "push"
-  - "commiter"
-  - "pousser"
-  - "save changes"
-  - "sauvegarder les changements"
-allowed-tools: Bash(git:*)
+description: Commit this session's work with explicit paths and a structured message, and push only when the user asked for a push. Use when the user says "commit", "push", "commiter", "pousser" or "save changes".
+allowed-tools: Bash(git:*), Bash(gh:*)
 user-invocable: true
 ---
 
-# Git Add, Commit & Push
+# Commit (and push when asked)
+
+The project's own rules (AGENTS.md, CLAUDE.md) win over this skill: commit gate, branch policy, publication authorization.
 
 ## Context
 
-- Current branch: !`git branch --show-current`
+- Branch: !`git branch --show-current`
 - Status: !`git status --short`
-- Changes summary: !`git diff HEAD --stat`
-- Changes detail: !`git diff HEAD`
+- Diff summary: !`git diff HEAD --stat`
 
-## Instructions
+## Steps
 
-1. Run `git add .`
-2. Create a commit:
-   - If user provided a message, use it directly
-   - Otherwise, generate a concise message based on the changes above
-3. Push to origin: `git push -u origin <branch>`
+1. Run the project's pre-commit gate when it defines one (for example typecheck, lint and test from `package.json`). Stop and report on failure.
+2. Stage only the files this session changed, by explicit path: `git add -- <path> <path>`. Never `git add .`, `git add -A` or `git commit -a`: parallel sessions and worktrees can share the index and working tree, and a broad add has swallowed another session's work before.
+3. Check that `git diff --cached --stat` lists exactly those files; unstage anything else.
+4. Commit with the format below. A message given by the user becomes the subject; still add the body.
+5. Push only when the user asked to push: `git push -u origin <branch>`. Never push straight to the default branch unless the user asked for it, and never force-push without an explicit request.
+6. Report the commit hash, the files and the push target.
 
-## Auto-generated Message Format
+## Message format
 
-- First line: short summary (50 chars max)
-- Blank line
-- Body: details if needed
-- End with: `Co-Authored-By: Claude <noreply@anthropic.com>`
+Subject: `type(scope): summary`, 72 characters at most.
 
-Run commands sequentially and confirm the result.
+Body, one or two lines per section (the same sections make a PR description):
 
-## Finishing a Development Branch
+- What: the change.
+- Why: the problem or decision behind it.
+- Proof: checks run and their result; native or device verification, or "pending".
+- Delivery: what is actually live (deploy, OTA, binary, migration, with ids) versus pending.
+- Tracking: the tracked item and its new status, follow-ups. Omit when there is none.
 
-When all stories in a plan are completed and validated, present exactly these 4 options:
+End with the attribution lines the session or project specifies.
 
-### Options
-1. **Merge back to main locally** — `git checkout main && git pull && git merge {branch} && git branch -d {branch}`
-2. **Push and create a Pull Request** — push branch, then suggest creating PR
-3. **Keep the branch as-is** — no cleanup, branch stays for later
-4. **Discard this work** — requires explicit confirmation ("discard") before deleting
+## Finishing a branch
 
-### Process
-1. Run `pnpm test` (or equivalent) — stop if tests fail
-2. Identify the base branch: `git merge-base --fork-point main HEAD` (or `master`)
-3. Present the 4 options above
-4. Execute the chosen option
-5. Clean up worktree if applicable (Options 1, 2, 4)
-
-### Safety
-- Never merge with failing tests
-- Never discard without explicit typed confirmation
-- Never force-push without explicit user request
+When the user wants to wrap up a branch, run the gate, then offer: push and open a PR (default), keep the branch, merge locally, or discard (only after a typed confirmation). Never delete a branch or worktree another session may own.

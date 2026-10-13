@@ -16,6 +16,7 @@ args:
   - name: feature
     description: Feature name for feature-specific plan (creates in features/{name}/)
     required: false
+disable-model-invocation: true
 ---
 
 # Implementation Plan Skill

@@ -15,6 +15,7 @@ args:
   - name: feature
     description: Feature name to work on (reads from memory-bank/features/{name}/)
     required: false
+disable-model-invocation: true
 ---
 
 # Implement a Task
