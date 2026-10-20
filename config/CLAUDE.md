@@ -100,7 +100,7 @@ When creating new commands, agents, or instructions, always write them in Englis
 - **Web search:** Use **Tavily** (`tavily_search`) as the primary tool for web research and real-time information
 - **Web search fallbacks:** **Brave Search MCP** when Tavily is unavailable or rate-limited; **Exa** for semantic/similarity search (finding content "like X"); built-in **WebSearch** as last resort
 - **Reading URLs:** Use **WebFetch** by default (free, sufficient for docs/articles)
-- **Fallback to Firecrawl** for: JS-heavy pages/SPAs, multi-page crawling, structured data extraction with schema, or when anti-bot bypass is needed
+- **Fallback for JS-heavy pages/SPAs**: use the built-in browser (`get_page_text`) or `tavily_extract`
 
 ## Code Search (local repos)
 
