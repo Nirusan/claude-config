@@ -287,7 +287,6 @@ Plugins extend Claude Code with additional capabilities.
 | `code-simplifier` | Simplifies and refines code for clarity and maintainability |
 | `typescript-lsp` | TypeScript language server integration |
 | `security-guidance` | Security best practices and vulnerability detection |
-| `context7` | Fetches up-to-date library documentation |
 
 ---
 

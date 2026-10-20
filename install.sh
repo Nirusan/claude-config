@@ -323,7 +323,6 @@ else
     echo "  - code-simplifier"
     echo "  - typescript-lsp"
     echo "  - security-guidance"
-    echo "  - context7"
 fi
 echo ""
 echo "Also installed:"
