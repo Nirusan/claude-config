@@ -296,10 +296,12 @@ Les serveurs MCP (Model Context Protocol) étendent Claude Code avec des intégr
 
 | Serveur | Utilité | Auth |
 |---------|---------|------|
-| `brave-search` | Recherche web | Clé API ([brave.com/search/api](https://brave.com/search/api)) |
+| `tavily` | Recherche et extraction web principales | Clé API ([tavily.com](https://tavily.com)) |
+| `brave-search` | Recherche web de secours | Clé API ([brave.com/search/api](https://brave.com/search/api)) |
 | `supabase` | Gestion de base de données | OAuth (pas de clé nécessaire) |
 | `exa` | Recherche web IA | OAuth (pas de clé nécessaire) |
 | `context7` | Documentation des librairies | Aucune (gratuit) |
+| `appkittie` | Données marché App Store / Google Play | Clé API |
 | `dev-browser` | Automatisation navigateur (Playwright sandboxé) | Aucune (`npm i -g dev-browser`) |
 
 **Après installation :**
@@ -340,10 +342,20 @@ git add -A && git commit -m "sync" && git push
 - `~/.claude/agents/*.md` → `agents/`
 - `~/.claude/skills/*/SKILL.md` → `skills/`
 - Template serveurs MCP depuis `~/.claude.json`
+- Mémoire auto (`~/.claude/projects/*/memory/`) → le clone **privé** `Nirusan/claude-memory` dans `~/Sites/claude-memory` (jamais ce repo public ; ignoré si GitHub ne confirme pas que ce repo est privé)
+
+### Restaurer la mémoire sur un nouvel ordi
+
+```bash
+gh repo clone Nirusan/claude-memory ~/Sites/claude-memory
+~/Sites/claude-memory/restore.sh
+```
+
+Les dossiers de mémoire portent le chemin absolu de chaque projet : garde le même nom d'utilisateur et la même organisation `~/Sites/...`.
 
 ### Utiliser le skill /sync-config
 
-Le skill `/sync-config` est maintenant inclus par défaut. Il lance le script de sync et affiche le statut git :
+Le skill `/sync-config` sauvegarde Claude et Codex d'un coup (claude-config, claude-memory, codex-config, codex-memory) : il met à jour chaque clone, lance les deux scripts de sync, cherche les fuites, puis commite et pousse :
 
 ```bash
 /sync-config
