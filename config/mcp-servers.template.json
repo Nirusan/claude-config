@@ -11,17 +11,6 @@
         "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
       }
     },
-    "firecrawl": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "firecrawl-mcp"
-      ],
-      "env": {
-        "FIRECRAWL_API_KEY": "YOUR_API_KEY_HERE"
-      }
-    },
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp"
@@ -31,20 +20,6 @@
       "url": "https://mcp.exa.ai/mcp",
       "headers": {}
     },
-    "n8n-mcp": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "n8n-mcp"
-      ],
-      "env": {
-        "MCP_MODE": "stdio",
-        "LOG_LEVEL": "error",
-        "DISABLE_CONSOLE_OUTPUT": "true",
-        "N8N_API_URL": "YOUR_API_KEY_HERE",
-        "N8N_API_KEY": "YOUR_API_KEY_HERE"
-      }
-    },
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
@@ -52,17 +27,6 @@
     "tavily": {
       "type": "http",
       "url": "YOUR_API_KEY_HERE"
-    },
-    "gemini-design-mcp": {
-      "command": "pnpm",
-      "args": [
-        "-C",
-        "/Users/nirusan/Sites/gemini-mcp",
-        "dev"
-      ],
-      "env": {
-        "GEMINI_API_KEY": "YOUR_API_KEY_HERE"
-      }
     },
     "appkittie": {
       "type": "http",

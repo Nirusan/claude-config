@@ -297,13 +297,10 @@ Les serveurs MCP (Model Context Protocol) étendent Claude Code avec des intégr
 | Serveur | Utilité | Auth |
 |---------|---------|------|
 | `brave-search` | Recherche web | Clé API ([brave.com/search/api](https://brave.com/search/api)) |
-| `firecrawl` | Scraping web avancé | Clé API ([firecrawl.dev](https://firecrawl.dev)) |
 | `supabase` | Gestion de base de données | OAuth (pas de clé nécessaire) |
 | `exa` | Recherche web IA | OAuth (pas de clé nécessaire) |
 | `context7` | Documentation des librairies | Aucune (gratuit) |
 | `dev-browser` | Automatisation navigateur (Playwright sandboxé) | Aucune (`npm i -g dev-browser`) |
-| `gemini-design-mcp` | Design avec Gemini | Clé API |
-| `n8n-mcp` | Automatisation de workflows | Clé API + URL |
 
 **Après installation :**
 

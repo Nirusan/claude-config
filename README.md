@@ -298,13 +298,10 @@ MCP (Model Context Protocol) servers extend Claude Code with external service in
 | Server | Purpose | Auth |
 |--------|---------|------|
 | `brave-search` | Web search | API Key ([brave.com/search/api](https://brave.com/search/api)) |
-| `firecrawl` | Advanced web scraping | API Key ([firecrawl.dev](https://firecrawl.dev)) |
 | `supabase` | Database management | OAuth (no key needed) |
 | `exa` | AI-powered web search | OAuth (no key needed) |
 | `context7` | Library documentation | None (free) |
 | `dev-browser` | Browser automation (sandboxed Playwright) | None (`npm i -g dev-browser`) |
-| `gemini-design-mcp` | Design with Gemini | API Key |
-| `n8n-mcp` | Workflow automation | API Key + URL |
 
 **After installation:**
 

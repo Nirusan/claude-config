@@ -24,10 +24,6 @@ Create `.claude/` directory if needed, then write `settings.local.json` with:
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
       "mcp__brave-search__brave_web_search", "mcp__brave-search__brave_local_search",
-      "mcp__firecrawl__firecrawl_scrape", "mcp__firecrawl__firecrawl_map",
-      "mcp__firecrawl__firecrawl_search", "mcp__firecrawl__firecrawl_crawl",
-      "mcp__firecrawl__firecrawl_check_crawl_status", "mcp__firecrawl__firecrawl_extract",
-      "mcp__firecrawl__firecrawl_agent", "mcp__firecrawl__firecrawl_agent_status",
       "mcp__claude-in-chrome__javascript_tool", "mcp__claude-in-chrome__read_page",
       "mcp__claude-in-chrome__find", "mcp__claude-in-chrome__form_input",
       "mcp__claude-in-chrome__computer", "mcp__claude-in-chrome__navigate",
@@ -86,7 +82,6 @@ Create `.claude/` directory if needed, then write `settings.local.json` with:
 - **IDE integration**: getDiagnostics, executeCode
 - **Context7**: Library documentation lookup
 - **Search**: Brave Search, Exa
-- **Firecrawl**: Web scraping, crawling, extraction, agent
 - **Claude-in-Chrome**: Browser automation, screenshots, form filling, navigation
 - **dev-browser**: Headless browser automation via Playwright (sandboxed scripts)
 - **Supabase**: All read operations + project/branch management
