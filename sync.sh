@@ -95,6 +95,30 @@ else
     fi
 fi
 
+# Sync auto-memory (~/.claude/projects/<slug>/memory/) to a SEPARATE PRIVATE repo.
+# Decision 2026-10-20: this repo is public and memory holds business facts
+# (accounts, tax, incidents), so memory never lands here. The visibility check
+# below refuses to copy into a clone whose GitHub repo is not private.
+MEMORY_REPO="${CLAUDE_MEMORY_REPO:-$HOME/Sites/claude-memory}"
+echo "==> Syncing auto-memory → $MEMORY_REPO..."
+if [[ ! -d "$MEMORY_REPO/.git" ]]; then
+    echo "    ⚠ $MEMORY_REPO is not a git clone, skipping memory sync"
+    echo "      (gh repo clone Nirusan/claude-memory $MEMORY_REPO)"
+elif [[ "$(cd "$MEMORY_REPO" && gh repo view --json visibility -q .visibility 2>/dev/null)" != "PRIVATE" ]]; then
+    echo "    ⚠ $MEMORY_REPO is not a verified PRIVATE GitHub repo, skipping memory sync"
+else
+    mkdir -p "$MEMORY_REPO/projects"
+    for memory_dir in "$CLAUDE_DIR/projects"/*/memory; do
+        slug=$(basename "$(dirname "$memory_dir")")
+        # Temp and scratch sessions only leave empty or throwaway memory
+        [[ "$slug" == -private-* || "$slug" == *scratch-workspaces* ]] && continue
+        [[ -z "$(ls -A "$memory_dir" 2>/dev/null)" ]] && continue
+        mkdir -p "$MEMORY_REPO/projects/$slug"
+        rsync -a --delete "$memory_dir/" "$MEMORY_REPO/projects/$slug/memory/"
+        echo "    ✓ $slug"
+    done
+fi
+
 echo ""
 echo "==> Sync complete!"
 echo ""
@@ -102,3 +126,4 @@ echo "Next steps:"
 echo "  cd $SCRIPT_DIR"
 echo "  git status"
 echo "  git add -A && git commit -m 'sync config' && git push"
+echo "  (and the same in $MEMORY_REPO for memory)"
