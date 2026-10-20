@@ -138,7 +138,7 @@ Définit les standards de code appliqués à tous les projets :
     "CLAUDE_CODE_EFFORT_LEVEL": "max"
   },
   "permissions": { "allow": ["Bash(pnpm ...)"] },
-  "enabledPlugins": { "mgrep": true, "frontend-design": true, ... },
+  "enabledPlugins": { "frontend-design": true, ... },
   "language": "French"
 }
 ```
@@ -281,7 +281,6 @@ Les plugins étendent Claude Code avec des capacités supplémentaires.
 
 | Plugin | Ce qu'il fait |
 |--------|---------------|
-| `mgrep` | Recherche sémantique dans le code via embeddings (meilleur que grep pour les concepts) |
 | `frontend-design` | Génère des composants UI distinctifs et production-ready |
 | `code-review` | Code review automatisée avec checks sécurité et qualité |
 | `code-simplifier` | Simplifie et raffine le code pour plus de clarté et maintenabilité |

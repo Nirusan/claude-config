@@ -287,16 +287,6 @@ if [[ "$INSTALL_MODE" == "user" ]]; then
         git clone --depth 1 --quiet https://github.com/anthropics/claude-plugins-official.git "$OFFICIAL_PLUGINS_DIR"
     fi
 
-    # Clone or update Mixedbread-Grep (mgrep)
-    MGREP_DIR="$CLAUDE_DIR/plugins/marketplaces/Mixedbread-Grep"
-    if [[ -d "$MGREP_DIR/.git" ]]; then
-        echo "    Updating Mixedbread-Grep..."
-        git -C "$MGREP_DIR" pull --quiet
-    else
-        echo "    Cloning Mixedbread-Grep..."
-        git clone --depth 1 --quiet https://github.com/mixedbread-ai/mgrep.git "$MGREP_DIR"
-    fi
-
     # Create known_marketplaces.json
     CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     cat > "$CLAUDE_DIR/plugins/known_marketplaces.json" << EOF
@@ -307,14 +297,6 @@ if [[ "$INSTALL_MODE" == "user" ]]; then
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "$CLAUDE_DIR/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "$CURRENT_DATE"
-  },
-  "Mixedbread-Grep": {
-    "source": {
-      "source": "github",
-      "repo": "mixedbread-ai/mgrep"
-    },
-    "installLocation": "$CLAUDE_DIR/plugins/marketplaces/Mixedbread-Grep",
     "lastUpdated": "$CURRENT_DATE"
   }
 }
@@ -333,10 +315,9 @@ else
     echo "Installed (USER-level):"
     echo "  - ~/.claude/CLAUDE.md"
     echo "  - ~/.claude/settings.json (model: opus, language: French)"
-    echo "  - 2 plugin marketplaces"
+    echo "  - 1 plugin marketplace (others are added from settings.json extraKnownMarketplaces)"
     echo ""
     echo "Enabled plugins:"
-    echo "  - mgrep (semantic search)"
     echo "  - frontend-design"
     echo "  - code-review"
     echo "  - code-simplifier"
